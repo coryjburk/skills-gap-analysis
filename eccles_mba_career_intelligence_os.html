@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eccles MBA Career Intelligence OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #F7F5F0;
+  --c-surface: #FFFFFF;
+  --c-border: #E2DDD5;
+  --c-text: #1A1916;
+  --c-muted: #7A766E;
+  --c-accent: #1D4E3F;
+  --c-accent-light: #E8F0EE;
+  --c-red: #C0392B;
+  --c-red-light: #FBEAEA;
+  --c-amber: #C27A1A;
+  --c-amber-light: #FDF3E3;
+  --c-green: #1D7A4A;
+  --c-green-light: #E8F5EE;
+  --c-teal: #1D6B7A;
+  --c-teal-light: #E6F3F5;
+  --c-r1: #E24B4A; --c-r1l: #FCEBEB;
+  --c-r2: #C27A1A; --c-r2l: #FAEEDA;
+  --c-r3: #1D7A4A; --c-r3l: #E8F5EE;
+  --c-r4: #0F6E56; --c-r4l: #E1F5EE;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--c-bg); color: var(--c-text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+.app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { background: var(--c-accent); color: white; padding: 28px 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 16px; }
+.sidebar-logo h1 { font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,0.9); line-height: 1.4; }
+.sidebar-logo p { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.6); transition: all .15s; border-left: 3px solid transparent; }
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.nav-item.active { background: rgba(255,255,255,0.1); color: white; border-left-color: #A8D5C2; font-weight: 500; }
+.nav-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+.nav-item.active .nav-num { background: #A8D5C2; color: var(--c-accent); }
+.nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 20px; }
+.sidebar-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+/* MAIN */
+.main { padding: 32px 40px; max-width: 860px; }
+.page-header { margin-bottom: 28px; }
+.page-header h2 { font-size: 22px; font-weight: 500; }
+.page-header p { font-size: 13px; color: var(--c-muted); margin-top: 4px; }
+
+/* CARDS */
+.card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.card-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 14px; }
+
+/* FORM ELEMENTS */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+label.field-label { font-size: 12px; color: var(--c-muted); font-weight: 500; }
+select, input[type="text"], textarea {
+  padding: 8px 10px; border-radius: 7px; border: 1px solid var(--c-border);
+  background: var(--c-bg); color: var(--c-text); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; transition: border-color .15s; width: 100%;
+}
+select:focus, input:focus, textarea:focus { outline: none; border-color: var(--c-accent); }
+textarea { resize: vertical; min-height: 120px; }
+
+/* SKILL GRID */
+.skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.skill-card { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px; }
+.skill-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.skill-desc { font-size: 11px; color: var(--c-muted); margin-bottom: 8px; line-height: 1.4; }
+.rating-row { display: flex; gap: 4px; }
+.rater { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; color: var(--c-muted); transition: all .12s; font-family: 'DM Mono', monospace; }
+.rater:hover { border-color: var(--c-accent); }
+.rater.r1.lit { background: var(--c-r1l); color: var(--c-r1); border-color: var(--c-r1); }
+.rater.r2.lit { background: var(--c-r2l); color: var(--c-r2); border-color: var(--c-r2); }
+.rater.r3.lit { background: var(--c-r3l); color: var(--c-r3); border-color: var(--c-r3); }
+.rater.r4.lit { background: var(--c-r4l); color: var(--c-r4); border-color: var(--c-r4); }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--c-muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn { padding: 9px 18px; border-radius: 8px; border: 1px solid var(--c-border); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; transition: all .15s; }
+.btn-secondary { background: var(--c-surface); color: var(--c-text); }
+.btn-secondary:hover { background: var(--c-bg); }
+.btn-primary { background: var(--c-accent); color: white; border-color: var(--c-accent); }
+.btn-primary:hover { background: #163D31; }
+.btn-danger { background: var(--c-red-light); color: var(--c-red); border-color: #F0A0A0; }
+
+/* DIFF BADGES */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; user-select: none; transition: all .15s; }
+.badge-mil { background: #E8F0FF; color: #2D4A8A; border: 1px solid #B5C8F0; }
+.badge-intl { background: #F0E8FF; color: #5A2D8A; border: 1px solid #C8B5F0; }
+.badge-exp { background: var(--c-accent-light); color: var(--c-accent); border: 1px solid #B5D5C8; }
+.badge.selected { box-shadow: 0 0 0 2px currentColor; }
+
+/* GAP ITEMS */
+.gap-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+.gap-item.critical { background: var(--c-r1l); border: 1px solid #F0A0A0; }
+.gap-item.moderate { background: var(--c-r2l); border: 1px solid #EFC888; }
+.gap-item.ontrack { background: #F5F5F5; border: 1px solid var(--c-border); }
+.gap-item.strength { background: var(--c-r4l); border: 1px solid #9FE1CB; }
+.gap-name { font-size: 13px; font-weight: 500; flex: 1; }
+.gap-name.critical { color: var(--c-red); }
+.gap-name.moderate { color: var(--c-amber); }
+.gap-name.ontrack { color: var(--c-muted); }
+.gap-name.strength { color: var(--c-r4); }
+.gap-scores { font-size: 11px; color: var(--c-muted); white-space: nowrap; }
+.gap-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; white-space: nowrap; }
+.gap-tag.critical { background: #F7C1C1; color: #7A1A1A; }
+.gap-tag.moderate { background: #FAC775; color: #5A3A00; }
+.gap-tag.ontrack { background: #E8E8E8; color: #555; }
+.gap-tag.strength { background: var(--c-r4l); color: var(--c-r4); }
+
+/* SCORE DISPLAY */
+.score-big { text-align: center; padding: 24px 0 16px; }
+.score-number { font-size: 64px; font-weight: 300; color: var(--c-accent); font-family: 'DM Mono', monospace; line-height: 1; }
+.score-label { font-size: 16px; font-weight: 500; margin-top: 6px; }
+.score-desc { font-size: 13px; color: var(--c-muted); margin-top: 4px; }
+.score-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.score-bar-label { font-size: 12px; color: var(--c-muted); width: 150px; flex-shrink: 0; }
+.score-bar-track { flex: 1; height: 8px; background: var(--c-bg); border-radius: 4px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 4px; transition: width .5s ease; }
+.score-bar-pct { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--c-muted); width: 32px; text-align: right; }
+
+/* ACTION PLAN */
+.action-phase { margin-bottom: 20px; }
+.action-phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.phase-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.phase-30 { background: #E8F5EE; color: #1D7A4A; }
+.phase-60 { background: #E6F3F5; color: #1D6B7A; }
+.phase-90 { background: var(--c-accent-light); color: var(--c-accent); }
+.action-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.action-list li { font-size: 13px; color: var(--c-text); padding: 9px 12px; background: var(--c-bg); border-radius: 7px; display: flex; gap: 10px; line-height: 1.5; }
+.action-list li::before { content: "→"; color: var(--c-muted); flex-shrink: 0; margin-top: 1px; }
+.adjacent-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.adj-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; background: var(--c-bg); border: 1px solid var(--c-border); color: var(--c-text); }
+
+/* PROMPT */
+.prompt-box { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--c-text); background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 8px; padding: 14px; white-space: pre-wrap; word-break: break-word; line-height: 1.7; max-height: 400px; overflow-y: auto; }
+
+/* TABS within skills panel */
+.skill-section { margin-bottom: 20px; }
+
+/* PANEL visibility */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* NOTICE */
+.notice { background: var(--c-accent-light); border: 1px solid #B5D5C8; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--c-accent); margin-bottom: 16px; }
+
+/* EMPTY STATE */
+.empty { font-size: 13px; color: var(--c-muted); padding: 8px 0; font-style: italic; }
+
+@media (max-width: 700px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; flex-direction: row; flex-wrap: wrap; padding: 12px; }
+  .main { padding: 20px; }
+  .skill-grid { grid-template-columns: 1fr; }
+  .field-grid { grid-template-columns: 1fr; }
+  .field-grid.three { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Eccles MBA<br>Career Intelligence</h1>
+    <p>David Eccles School of Business</p>
+  </div>
+  <div class="nav-item active" onclick="showPanel('target')">
+    <div class="nav-num">1</div> Career Target
+  </div>
+  <div class="nav-item" onclick="showPanel('skills')">
+    <div class="nav-num">2</div> Skills Input
+  </div>
+  <div class="nav-item" onclick="showPanel('gap')">
+    <div class="nav-num">3</div> Gap Analysis
+  </div>
+  <div class="nav-item" onclick="showPanel('score')">
+    <div class="nav-num">4</div> Readiness Score
+  </div>
+  <div class="nav-item" onclick="showPanel('action')">
+    <div class="nav-num">5</div> Action Plan
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-item" onclick="showPanel('prompt')">
+    <div class="nav-num">6</div> AI Coaching Prompt
+  </div>
+  <div class="sidebar-footer">
+    University of Utah<br>MBA Career Services<br>v1.0 · 2025–2026
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- PANEL 1: TARGET -->
+<div class="panel active" id="panel-target">
+  <div class="page-header">
+    <h2>Career Target</h2>
+    <p>Define where you want to go. This calibrates all market benchmarks.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Target role &amp; market</div>
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label">Career track *</label>
+        <select id="track" onchange="onTrackChange()">
+          <option value="">Select your target track...</option>
+          <option value="pm">Product Management / Product Marketing</option>
+          <option value="ops">Operations / Supply Chain</option>
+          <option value="fin">Finance / Investment</option>
+          <option value="strat">Strategy / Consulting</option>
+          <option value="health">Healthcare Management</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Specific target role (optional)</label>
+        <input type="text" id="role" placeholder="e.g. Product Manager, Sr. Analyst, Associate">
+      </div>
+    </div>
+    <div class="field-grid three">
+      <div class="field-group">
+        <label class="field-label">Target industry</label>
+        <select id="industry">
+          <option value="">Select...</option>
+          <option>SaaS / Tech</option>
+          <option>Healthcare Tech</option>
+          <option>Consumer Goods / CPG</option>
+          <option>Financial Services</option>
+          <option>Management Consulting</option>
+          <option>Healthcare / Hospital System</option>
+          <option>Manufacturing</option>
+          <option>Retail / E-commerce</option>
+          <option>Energy / Utilities</option>
+          <option>Government / Defense</option>
+          <option>Non-profit</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Company stage</label>
+        <select id="stage">
+          <option value="">Select...</option>
+          <option>Startup (Seed–Series B)</option>
+          <option>Growth Stage (Series C+)</option>
+          <option>Enterprise / Fortune 500</option>
+          <option>Consulting / Professional Services</option>
+          <option>Non-profit / Government</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">MBA year</label>
+        <select id="year">
+          <option value="">Select...</option>
+          <option value="y1">1st Year (seeking internship)</option>
+          <option value="y2">2nd Year (seeking full-time)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label">Geography preference</label>
+        <select id="geo">
+          <option>Salt Lake City / Utah</option>
+          <option>Mountain West</option>
+          <option>West Coast</option>
+          <option>Remote / Flexible</option>
+          <option>National (open to relocate)</option>
+          <option>International</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Years of professional experience</label>
+        <select id="yrsexp">
+          <option>4–5 years</option>
+          <option>6–7 years</option>
+          <option>8–10 years</option>
+          <option>10+ years</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Your differentiators (select all that apply)</div>
+    <p style="font-size:12px;color:var(--c-muted);margin-bottom:12px">These adjust your readiness score and shape your AI coaching prompt. Eccles students bring extraordinary backgrounds — claim them.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <div class="badge badge-mil" id="d-mil" onclick="toggleBadge(this)">🎖 Military veteran</div>
+      <div class="badge badge-intl" id="d-intl" onclick="toggleBadge(this)">🌐 International student</div>
+      <div class="badge badge-exp" id="d-tech" onclick="toggleBadge(this)">💻 Technical undergrad (Eng/CS/Sci)</div>
+      <div class="badge badge-exp" id="d-health" onclick="toggleBadge(this)">🏥 Clinical / healthcare background</div>
+      <div class="badge badge-exp" id="d-start" onclick="toggleBadge(this)">🚀 Startup or founder experience</div>
+      <div class="badge badge-exp" id="d-global" onclick="toggleBadge(this)">✈️ Significant international experience</div>
+      <div class="badge badge-mil" id="d-enterprise" onclick="toggleBadge(this)">🏢 Enterprise leadership (500+ person org)</div>
+    </div>
+    <div class="field-group" style="max-width:340px">
+      <label class="field-label">Self-assessed career clarity (1 = exploring, 4 = very focused)</label>
+      <select id="clarity">
+        <option value="1">1 — Still exploring my options</option>
+        <option value="2">2 — Have a direction, refining it</option>
+        <option value="3" selected>3 — Clear target, building toward it</option>
+        <option value="4">4 — Highly focused, ready to apply</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showPanel('skills')">Continue to skills input →</button>
+  </div>
+</div>
+
+<!-- PANEL 2: SKILLS INPUT -->
+<div class="panel" id="panel-skills">
+  <div class="page-header">
+    <h2>Skills Self-Assessment</h2>
+    <p>Rate yourself on the 1–4 scale below. The system compares you to real employer market expectations for your target track.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rating guide</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-r1)"></div> <strong>1</strong> — No exposure</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-r2)"></div> <strong>2</strong> — Exposure / classroom only</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-r3)"></div> <strong>3</strong> — Demonstrated on the job</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--c-r4)"></div> <strong>4</strong> — Advanced / led others with this skill</div>
+    </div>
+    <div class="notice">Rate honestly. Overrating inflates your score and produces a less useful action plan. Your coach will review and calibrate with you.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">A · Core business acumen (all tracks)</div>
+    <div class="skill-grid" id="grid-core"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">B · Leadership &amp; influence</div>
+    <div class="skill-grid" id="grid-leadership"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">C · AI, data &amp; modern workforce readiness</div>
+    <div class="skill-grid" id="grid-ai"></div>
+  </div>
+
+  <div class="card" id="func-card">
+    <div class="card-title" id="func-title">D · Functional skills (select a track on tab 1 first)</div>
+    <div class="skill-grid" id="grid-func"><p class="empty">Select a career track on step 1 to load track-specific functional skills.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">E · Career readiness signals</div>
+    <div class="skill-grid" id="grid-career"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="showPanel('target')">← Back</button>
+    <button class="btn btn-primary" onclick="runAnalysis()">Generate gap analysis →</button>
+  </div>
+</div>
+
+<!-- PANEL 3: GAP ANALYSIS -->
+<div class="panel" id="panel-gap">
+  <div class="page-header">
+    <h2>Gap Analysis</h2>
+    <p>Your skills compared to real employer expectations for your target track.</p>
+  </div>
+
+  <div class="card" id="gap-summary-card">
+    <div class="card-title">Analysis overview</div>
+    <div id="gap-summary-text"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--c-red)">Critical gaps — address first</div>
+    <div id="gaps-critical"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--c-amber)">Moderate gaps — address next</div>
+    <div id="gaps-moderate"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--c-r4)">Your differentiators &amp; strengths — lean into these</div>
+    <div id="gaps-strength"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">On track / meeting market expectations</div>
+    <div id="gaps-ontrack"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="showPanel('skills')">← Edit ratings</button>
+    <button class="btn btn-primary" onclick="showPanel('score')">View readiness score →</button>
+  </div>
+</div>
+
+<!-- PANEL 4: SCORE -->
+<div class="panel" id="panel-score">
+  <div class="page-header">
+    <h2>Career Readiness Score</h2>
+    <p>Weighted composite score based on your skills vs. market expectations.</p>
+  </div>
+
+  <div class="card">
+    <div class="score-big">
+      <div class="score-number" id="total-score">—</div>
+      <div class="score-label" id="score-label">Run analysis to see your score</div>
+      <div class="score-desc" id="score-desc"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Score breakdown</div>
+    <div id="score-breakdown"></div>
+    <p style="font-size:11px;color:var(--c-muted);margin-top:12px">Weights: Core Acumen 30% · Leadership 25% · Functional Skills 25% · AI &amp; Data 10% · Career Readiness 10%</p>
+  </div>
+
+  <div class="card" id="diff-card" style="display:none">
+    <div class="card-title">Differentiator adjustments applied</div>
+    <div id="diff-breakdown"></div>
+    <p style="font-size:12px;color:var(--c-muted);margin-top:8px">These bonuses reflect the genuine market value of your background. Employers actively recruit for these differentiators.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="showPanel('gap')">← Gap analysis</button>
+    <button class="btn btn-primary" onclick="showPanel('action')">View action plan →</button>
+  </div>
+</div>
+
+<!-- PANEL 5: ACTION PLAN -->
+<div class="panel" id="panel-action">
+  <div class="page-header">
+    <h2>Your 30 / 60 / 90-Day Action Plan</h2>
+    <p>Track-specific, prioritized actions based on your gap analysis.</p>
+  </div>
+
+  <div class="card" id="action-plan-card">
+    <div id="action-30-block"></div>
+    <div id="action-60-block"></div>
+    <div id="action-90-block"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Adjacent career paths to explore</div>
+    <p style="font-size:12px;color:var(--c-muted);margin-bottom:12px">Based on your track and profile, these adjacent roles often represent a strong fit and faster path to an offer.</p>
+    <div class="adjacent-grid" id="adjacent-roles"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="showPanel('score')">← Readiness score</button>
+    <button class="btn btn-primary" onclick="showPanel('prompt')">Generate AI coaching prompt →</button>
+  </div>
+</div>
+
+<!-- PANEL 6: AI PROMPT -->
+<div class="panel" id="panel-prompt">
+  <div class="page-header">
+    <h2>AI Coaching Prompt</h2>
+    <p>Copy this prompt into Claude (claude.ai) along with your resume for a personalized coaching session.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Step 1 — Copy your personalized prompt</div>
+    <div class="prompt-box" id="prompt-text">Complete steps 1–5 first to generate your personalized coaching prompt.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="copyPrompt()" id="copy-btn">Copy prompt</button>
+      <button class="btn btn-secondary" onclick="openClaude()">Open Claude ↗</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Step 2 — Paste your resume &amp; evidence here (optional)</div>
+    <p style="font-size:12px;color:var(--c-muted);margin-bottom:10px">This is for your reference. Paste your resume, key projects, certifications, and quantified achievements. Include the full text — more context produces better AI output.</p>
+    <textarea id="resume-text" placeholder="Paste your full resume text here. Include:
+• Work history with quantified achievements (metrics, $, %, people led)
+• Key projects and their business impact
+• Certifications and coursework
+• Military service details and rank (if applicable)
+• International experience
+• MBA coursework and case competitions
+• Volunteer leadership roles
+• Any publications, portfolios, or GitHub links"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-title">How to use this tool</div>
+    <ol style="font-size:13px;color:var(--c-muted);line-height:2;padding-left:18px">
+      <li>Copy the prompt above</li>
+      <li>Open claude.ai in a new tab</li>
+      <li>Paste the prompt, then paste your resume text below it</li>
+      <li>Press send — Claude will act as your career strategist</li>
+      <li>Re-run this analysis every 4–6 weeks to track progress</li>
+    </ol>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const SKILLS_DEF = {
+  core: [
+    {id:'strat', name:'Strategic thinking', desc:'Frames ambiguous problems; develops multi-scenario solutions'},
+    {id:'fin-acumen', name:'Financial literacy', desc:'P&L, budgeting, unit economics, ROI analysis'},
+    {id:'decision', name:'Decision-making under uncertainty', desc:'Uses data + judgment; reaches clear, defensible conclusions'},
+    {id:'market-analysis', name:'Market analysis', desc:'Competitor, customer, and industry landscape synthesis'},
+    {id:'ops-gen', name:'Operations & process improvement', desc:'Improves workflows, reduces waste, drives measurable efficiency'},
+  ],
+  leadership: [
+    {id:'exec-comm', name:'Executive communication', desc:'Concise, persuasive written and verbal communication upward'},
+    {id:'team-lead', name:'Team leadership', desc:'Directs cross-functional teams toward shared outcomes'},
+    {id:'change-mgmt', name:'Change management', desc:'Leads stakeholders through ambiguity and transformation'},
+    {id:'stakeholder', name:'Stakeholder alignment', desc:'Builds consensus across competing priorities and functions'},
+    {id:'storytell', name:'Storytelling & narrative', desc:'Translates complex data and strategy into compelling stories'},
+  ],
+  ai: [
+    {id:'ai-fluency', name:'AI fluency', desc:'Uses AI tools to accelerate work and decision-making daily'},
+    {id:'prompt-eng', name:'Prompt engineering', desc:'Crafts effective prompts to get high-quality AI outputs'},
+    {id:'data-lit', name:'Data literacy', desc:'Reads, interprets, and communicates data accurately'},
+    {id:'sql', name:'SQL / data querying', desc:'Extracts and manipulates data from databases'},
+    {id:'excel-adv', name:'Excel / Sheets (advanced)', desc:'Pivot tables, modeling, VLOOKUP, scenario analysis'},
+    {id:'data-viz', name:'Data visualization', desc:'Tableau, Power BI, or equivalent — storytelling with data'},
+  ],
+  career: [
+    {id:'personal-brand', name:'Personal brand (LinkedIn)', desc:'Optimized profile, active thought leadership, visibility'},
+    {id:'networking', name:'Networking consistency', desc:'Active informational interviews, relationship building'},
+    {id:'interview-prep', name:'Interview readiness', desc:'STAR method, behavioral, case, or technical prep'},
+    {id:'career-narr', name:'Career narrative', desc:'Clear, compelling story connecting past experience to target role'},
+    {id:'employer-target', name:'Employer targeting', desc:'Researched, prioritized list of target companies and roles'},
+  ]
+};
+
+const FUNC_SKILLS = {
+  pm: {
+    label: 'D · Product management & product marketing functional skills',
+    skills: [
+      {id:'roadmap', name:'Product roadmapping', desc:'Prioritizes features against strategy and customer needs'},
+      {id:'user-research', name:'User research / discovery', desc:'Interviews, surveys, usability testing, Jobs-to-be-Done'},
+      {id:'gtm', name:'Go-to-market strategy', desc:'Positioning, launch planning, GTM execution across channels'},
+      {id:'agile', name:'Agile / Scrum', desc:'Sprint planning, backlog grooming, cross-functional delivery'},
+      {id:'product-metrics', name:'Product analytics & KPIs', desc:'Defines and tracks metrics, funnel analysis, A/B testing'},
+      {id:'competitive', name:'Competitive intelligence', desc:'Tracks market dynamics, benchmarks features, informs positioning'},
+    ]
+  },
+  ops: {
+    label: 'D · Operations & supply chain management functional skills',
+    skills: [
+      {id:'scm', name:'Supply chain management', desc:'Sourcing, procurement, vendor management, logistics'},
+      {id:'lean', name:'Lean / Six Sigma', desc:'Process improvement, waste elimination, DMAIC, quality systems'},
+      {id:'demand-plan', name:'Demand planning / forecasting', desc:'Inventory optimization, S&OP, capacity planning'},
+      {id:'project-mgmt', name:'Project management', desc:'Scope, schedule, risk management, stakeholder communication'},
+      {id:'risk-ops', name:'Risk & resilience management', desc:'Identifies, quantifies, and mitigates operational risk'},
+      {id:'global-ops', name:'Global operations', desc:'Cross-border logistics, trade compliance, cultural fluency'},
+    ]
+  },
+  fin: {
+    label: 'D · Finance & investment functional skills',
+    skills: [
+      {id:'fin-model', name:'Financial modeling', desc:'3-statement models, DCF, LBO, sensitivity / scenario analysis'},
+      {id:'valuation', name:'Valuation', desc:'Comparable companies, precedent transactions, intrinsic value'},
+      {id:'corp-fin', name:'Corporate finance', desc:'Capital structure, WACC, M&A fundamentals, capital allocation'},
+      {id:'invest-analysis', name:'Investment analysis', desc:'Thesis development, due diligence, portfolio construction'},
+      {id:'accounting', name:'Accounting & financial reporting', desc:'GAAP, financial statements, variance analysis, controllership'},
+      {id:'risk-fin', name:'Risk & regulatory', desc:'Risk frameworks, compliance, regulatory environment awareness'},
+    ]
+  },
+  strat: {
+    label: 'D · Strategy & consulting functional skills',
+    skills: [
+      {id:'problem-struct', name:'Problem structuring', desc:'MECE frameworks, issue trees, hypothesis-driven thinking'},
+      {id:'client-mgmt', name:'Client management', desc:'Expectation setting, relationship development, trust building'},
+      {id:'exec-deck', name:'Executive deck creation', desc:'McKinsey-style slides, pyramid principle, tight narratives'},
+      {id:'quant-analysis', name:'Quantitative analysis', desc:'Modeling, market sizing, statistical reasoning, regression'},
+      {id:'industry-exp', name:'Industry expertise', desc:'Deep knowledge of target sector dynamics, players, and trends'},
+      {id:'implementation', name:'Implementation & delivery', desc:'Translates strategy into workstreams and measurable outcomes'},
+    ]
+  },
+  health: {
+    label: 'D · Healthcare management functional skills',
+    skills: [
+      {id:'hc-systems', name:'Healthcare systems knowledge', desc:'Payer/provider dynamics, reimbursement models, regulatory environment'},
+      {id:'pop-health', name:'Population health & epidemiology', desc:'Outcomes measurement, social determinants, public health concepts'},
+      {id:'hc-ops', name:'Clinical / hospital operations', desc:'Throughput, capacity management, quality metrics, patient flow'},
+      {id:'hc-finance', name:'Healthcare finance', desc:'DRGs, revenue cycle, value-based care, cost accounting'},
+      {id:'health-policy', name:'Health policy & regulation', desc:'ACA, CMS, state regulation, advocacy landscape, compliance'},
+      {id:'health-tech', name:'Digital health & health tech', desc:'EHR, interoperability, telehealth, AI in clinical settings'},
+    ]
+  }
+};
+
+// Market benchmarks by track — what employers expect (scale of 1-4)
+const BENCHMARKS = {
+  pm: {
+    strat:3, 'fin-acumen':2, decision:3, 'market-analysis':3, 'ops-gen':2,
+    'exec-comm':3, 'team-lead':3, 'change-mgmt':2, stakeholder:3, storytell:3,
+    'ai-fluency':3, 'prompt-eng':2, 'data-lit':3, sql:2, 'excel-adv':2, 'data-viz':2,
+    'personal-brand':3, networking:3, 'interview-prep':3, 'career-narr':3, 'employer-target':3,
+    roadmap:3, 'user-research':3, gtm:3, agile:3, 'product-metrics':3, competitive:2
+  },
+  ops: {
+    strat:2, 'fin-acumen':2, decision:3, 'market-analysis':2, 'ops-gen':4,
+    'exec-comm':2, 'team-lead':3, 'change-mgmt':3, stakeholder:2, storytell:2,
+    'ai-fluency':2, 'prompt-eng':2, 'data-lit':3, sql:2, 'excel-adv':3, 'data-viz':2,
+    'personal-brand':2, networking:2, 'interview-prep':3, 'career-narr':2, 'employer-target':3,
+    scm:4, lean:3, 'demand-plan':3, 'project-mgmt':3, 'risk-ops':3, 'global-ops':2
+  },
+  fin: {
+    strat:2, 'fin-acumen':4, decision:3, 'market-analysis':3, 'ops-gen':2,
+    'exec-comm':3, 'team-lead':2, 'change-mgmt':2, stakeholder:2, storytell:3,
+    'ai-fluency':2, 'prompt-eng':2, 'data-lit':3, sql:3, 'excel-adv':4, 'data-viz':2,
+    'personal-brand':2, networking:3, 'interview-prep':3, 'career-narr':3, 'employer-target':3,
+    'fin-model':4, valuation:3, 'corp-fin':3, 'invest-analysis':3, accounting:3, 'risk-fin':2
+  },
+  strat: {
+    strat:4, 'fin-acumen':3, decision:3, 'market-analysis':3, 'ops-gen':2,
+    'exec-comm':3, 'team-lead':3, 'change-mgmt':3, stakeholder:3, storytell:4,
+    'ai-fluency':2, 'prompt-eng':2, 'data-lit':3, sql:2, 'excel-adv':3, 'data-viz':2,
+    'personal-brand':3, networking:3, 'interview-prep':3, 'career-narr':3, 'employer-target':3,
+    'problem-struct':4, 'client-mgmt':3, 'exec-deck':4, 'quant-analysis':3, 'industry-exp':3, implementation:3
+  },
+  health: {
+    strat:2, 'fin-acumen':3, decision:3, 'market-analysis':2, 'ops-gen':3,
+    'exec-comm':3, 'team-lead':3, 'change-mgmt':3, stakeholder:3, storytell:2,
+    'ai-fluency':2, 'prompt-eng':2, 'data-lit':3, sql:2, 'excel-adv':2, 'data-viz':2,
+    'personal-brand':2, networking:3, 'interview-prep':3, 'career-narr':2, 'employer-target':3,
+    'hc-systems':4, 'pop-health':2, 'hc-ops':3, 'hc-finance':3, 'health-policy':2, 'health-tech':2
+  }
+};
+
+const ACTION_PLANS = {
+  pm: {
+    d30: [
+      'Optimize your LinkedIn headline and About section using PM-specific language: roadmap, discovery, 0-to-1, cross-functional delivery',
+      'Document 1–2 product case studies from your prior work history, quantifying business impact (revenue, adoption, efficiency)',
+      'Complete 5 informational interviews with PMs at target companies — focus on learning the hiring process and must-have skills',
+      'Begin SQL fundamentals via Mode Analytics or DataCamp — 20–30 min per day is sufficient to build job-ready basics in 30 days'
+    ],
+    d60: [
+      'Publish 2 LinkedIn posts on a product strategy topic, AI in product, or a market trend in your target industry — this builds employer visibility',
+      'Complete Google PM Certificate, Reforge PM Fundamentals, or equivalent structured PM program',
+      'Apply to 10–15 target internship/FT roles; tailor your resume bullet points using the language of each job description',
+      'Join Lenny\'s Newsletter community, Product-Led Alliance, or a local product meetup for networking'
+    ],
+    d90: [
+      'Build a portfolio page (Notion or personal site) with 2–3 case studies showcasing discovery → prioritization → outcome',
+      'Complete one AI/analytics project using public data — a Tableau or Power BI dashboard adds concrete evidence of data skills',
+      'Secure at least 3 employer conversations via warm outreach through Eccles alumni — target PMs 3–5 years post-MBA',
+      'Finalize your "PM story": how your prior operations, military, or industry background makes you a stronger PM than a traditional candidate'
+    ]
+  },
+  ops: {
+    d30: [
+      'List every supply chain, logistics, or operations win from your career with quantified impact: cost saved, cycle time reduced, throughput improved, headcount led',
+      'Complete a free Yellow Belt Lean/Six Sigma course online if not already certified — this closes the most common gap employers flag',
+      'Set up 5 informational interviews with ops/SCM professionals in your target industry — ask about their MBA hire criteria specifically',
+      'Research APICS CSCP or CSCMP credentials — these signal serious commitment to supply chain as a career track'
+    ],
+    d60: [
+      'Build an Excel or Power BI dashboard using a public supply chain dataset (US Census trade data, BLS, etc.) — this is your evidence artifact',
+      'Apply to Amazon Pathways, Target, Nike, or similar operations leadership development programs — these programs actively recruit MBA ops talent',
+      'Publish one LinkedIn post that translates a specific ops or supply chain challenge you solved — use business outcomes language, not function language',
+      'Build a target employer list of 20 companies with open ops/SCM roles; prioritize by sector fit and Salt Lake / remote availability'
+    ],
+    d90: [
+      'Join ISM (Institute for Supply Management) as a student member — attend one regional event for in-person networking',
+      'Practice ops case interviews: process improvement, capacity planning, make-vs-buy decisions — this is how Amazon and consulting firms evaluate you',
+      'Draft a 2-page "Supply Chain Leadership Profile" that explicitly translates military logistics or prior ops experience into civilian business language',
+      'Request a mock interview from your Eccles career coach before applications peak (typically Sep–Nov for summer programs)'
+    ]
+  },
+  fin: {
+    d30: [
+      'Build or refresh a 3-statement integrated financial model from scratch — use Macabacus template or WSP free module to structure it properly',
+      'Set up 5 informational interviews with finance associates/analysts at target firms; ask specifically about the summer associate recruiting timeline',
+      'Subscribe to Morning Brew Markets, Bloomberg Odd Lots, and one sector-specific newsletter — you need daily market fluency',
+      'Map your prior career to finance STAR stories — identify at least 3 high-quality examples of financial judgment or stakeholder influence'
+    ],
+    d60: [
+      'Complete a full DCF + comps valuation on one public company in your target industry — this becomes your technical interview answer to "walk me through a model"',
+      'Take a Wall Street Prep or Breaking Into Wall Street modeling module — the technical rigor will differentiate you from non-finance backgrounds',
+      'Apply to summer associate recruiting (bulge bracket and MM banks open in August–October for 1st-year MBAs — do not miss this window)',
+      'Build your firm list: IB, PE, Corp Dev, FP&A — rank by sector fit, likelihood, and growth trajectory, not just prestige'
+    ],
+    d90: [
+      'Consider CFA Level 1 candidacy — even beginning the process signals serious commitment to finance and closes the technical credibility gap',
+      'Present your valuation model to a finance professor or alumni for critique — getting real feedback before interviews is essential',
+      'Nail your "why finance / why now" narrative — this is the most common screening question and military/ops candidates need a crisp answer',
+      'Schedule 3 mock technical interviews covering LBO mechanics, DCF walk-through, and accounting adjustments before recruiting season'
+    ]
+  },
+  strat: {
+    d30: [
+      'Practice one structured case interview per day using Case in Point (Cosentino) or Victor Cheng materials — start now, not at recruiting season',
+      'Map your prior work experience to consulting competencies using MECE structure — create 5 polished STAR stories with hypothesis-driven framing',
+      'Set up 5 coffee chats with consultants at MBB, Tier 2 (Deloitte S&O, Oliver Wyman, LEK), or boutique strategy firms via Eccles alumni',
+      'Subscribe to McKinsey Insights, BCG Henderson Institute, and Bain Brief — read one article per day to build sector and framework fluency'
+    ],
+    d60: [
+      'Join Eccles consulting club and compete in one case competition — this is the most efficient way to build case skills and employer visibility simultaneously',
+      'Build one structured consulting-style deck (10–12 slides) on a real strategic business question in your target industry — pyramid principle throughout',
+      'Apply to MBB, Tier 2, and Big 4 strategy tracks — for 1st-year MBAs, consulting recruiting often opens in September; do not wait until spring',
+      'Publish one LinkedIn post with a structured, data-backed take on an industry trend using the pyramid principle to organize the argument'
+    ],
+    d90: [
+      'Complete 50+ case practice sessions before recruiting season — this is the actual threshold for competitive preparedness at MBB',
+      'Develop expertise in one specific industry vertical (healthcare, energy, tech) — generalists get screened out; specialists get callbacks',
+      'Secure at least 2 employer-specific networking conversations via Eccles alumni before submitting applications — warm referrals convert at 3x the rate of cold apps',
+      'Finalize your "why consulting / why you" story — military or ops backgrounds are genuinely valued, but you must translate them into consulting language explicitly'
+    ]
+  },
+  health: {
+    d30: [
+      'Map every prior experience to healthcare management language — translate clinical, operations, policy, or finance wins into healthcare outcomes language',
+      'Read one foundational text: "The Innovator\'s Prescription" (Christensen) or the latest AHA Health & Human Services workforce report',
+      'Set up 5 informational interviews with MHA/MBA alumni in healthcare administration, payer strategy, or digital health roles',
+      'Identify 3–5 target organizations: one health system, one payer, one digital health company — start mapping roles and timelines'
+    ],
+    d60: [
+      'Complete one online course in healthcare finance or health policy — Coursera (Johns Hopkins, Michigan) and edX both have strong options at low cost',
+      'Apply to summer associate roles at consulting firms with healthcare practices: McKinsey Health, BCG Center for Health, Deloitte Life Sciences',
+      'Join ACHE (American College of Healthcare Executives) as a student member — this is the primary professional network for healthcare management',
+      'Build a research brief on one healthcare trend (value-based care, AI in clinical, staffing crisis, behavioral health access) and share it on LinkedIn'
+    ],
+    d90: [
+      'Build a healthcare management case study from your prior career — even non-healthcare experience can become a healthcare leadership story with the right framing',
+      'Attend one ACHE or MGMA regional event — in-person networking in healthcare is still extremely high-value and not yet saturated by MBA students',
+      'Complete a data analysis using CMS open datasets or HCUP — this demonstrates both data literacy and healthcare domain knowledge simultaneously',
+      'Finalize your healthcare leadership narrative — why you, why healthcare, why now — with specific language about your specific background\'s transferable value'
+    ]
+  }
+};
+
+const ADJACENT_ROLES = {
+  pm: ['Product Operations', 'BizOps / RevOps', 'GTM Strategy Lead', 'Product Marketing Manager', 'UX Strategy', 'Customer Success (Strategic)'],
+  ops: ['Program Management', 'Supply Chain Consulting', 'COO / Chief of Staff Track', 'Logistics Strategy', 'Process Excellence Lead', 'Operations Analyst'],
+  fin: ['Corporate Development', 'FP&A Leadership', 'Private Equity (operational value)', 'Treasury / Capital Markets', 'Revenue Operations', 'Investment Banking'],
+  strat: ['BizOps Manager', 'Chief of Staff', 'Corporate Strategy', 'M&A / Corp Dev', 'General Management (Rotational)', 'Policy & Government Affairs'],
+  health: ['Health Tech Product Manager', 'Hospital Administration Rotational', 'Payer Strategy Associate', 'Digital Health Consulting', 'Population Health Analytics', 'Healthcare PE / IB']
+};
+
+let ratings = {};
+let analysisResults = null;
+let selectedTrack = '';
+
+function toggleBadge(el) {
+  el.classList.toggle('selected');
+}
+
+function isBadgeSelected(id) {
+  return document.getElementById(id)?.classList.contains('selected');
+}
+
+function onTrackChange() {
+  selectedTrack = document.getElementById('track').value;
+  if (!selectedTrack) return;
+  const fdata = FUNC_SKILLS[selectedTrack];
+  document.getElementById('func-title').textContent = fdata.label;
+  buildSkillGrid('grid-func', fdata.skills);
+}
+
+function buildSkillGrid(containerId, skills) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  skills.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'skill-card';
+    div.innerHTML = `
+      <div class="skill-name">${s.name}</div>
+      <div class="skill-desc">${s.desc}</div>
+      <div class="rating-row" id="rr-${s.id}"></div>
+    `;
+    container.appendChild(div);
+    const row = document.getElementById('rr-' + s.id);
+    [1,2,3,4].forEach(v => {
+      const btn = document.createElement('div');
+      btn.className = `rater r${v}`;
+      btn.textContent = v;
+      if (ratings[s.id] >= v) btn.classList.add('lit');
+      btn.onclick = () => {
+        ratings[s.id] = v;
+        row.querySelectorAll('.rater').forEach((r, i) => {
+          r.classList.toggle('lit', i < v);
+        });
+      };
+      row.appendChild(btn);
+    });
+  });
+}
+
+function getAllSkills() {
+  let all = [...SKILLS_DEF.core, ...SKILLS_DEF.leadership, ...SKILLS_DEF.ai, ...SKILLS_DEF.career];
+  if (selectedTrack && FUNC_SKILLS[selectedTrack]) {
+    all = [...all, ...FUNC_SKILLS[selectedTrack].skills];
+  }
+  return all;
+}
+
+function runAnalysis() {
+  const track = document.getElementById('track').value;
+  if (!track) { alert('Please select a career track on step 1 first.'); showPanel('target'); return; }
+  selectedTrack = track;
+
+  const bench = BENCHMARKS[track];
+  const allSkills = getAllSkills();
+  let critical = [], moderate = [], ontrack = [], strength = [];
+  let groupData = { core: [], leadership: [], ai: [], func: [], career: [] };
+
+  allSkills.forEach(s => {
+    const my = ratings[s.id] || 0;
+    const mkt = bench[s.id] || 2;
+    const gap = mkt - my;
+    const entry = { id: s.id, name: s.name, my, mkt, gap };
+
+    if (gap >= 2) critical.push(entry);
+    else if (gap === 1) moderate.push(entry);
+    else if (gap <= -1) strength.push(entry);
+    else ontrack.push(entry);
+
+    if (SKILLS_DEF.core.find(x => x.id === s.id)) groupData.core.push(entry);
+    else if (SKILLS_DEF.leadership.find(x => x.id === s.id)) groupData.leadership.push(entry);
+    else if (SKILLS_DEF.ai.find(x => x.id === s.id)) groupData.ai.push(entry);
+    else if (SKILLS_DEF.career.find(x => x.id === s.id)) groupData.career.push(entry);
+    else groupData.func.push(entry);
+  });
+
+  function groupScore(arr) {
+    if (!arr.length) return 0;
+    const rated = arr.filter(x => x.my > 0);
+    if (!rated.length) return 20;
+    const total = rated.reduce((acc, x) => acc + Math.min(x.my / Math.max(x.mkt, 1), 1), 0);
+    return Math.round((total / arr.length) * 100);
+  }
+
+  const scores = {
+    core: groupScore(groupData.core),
+    leadership: groupScore(groupData.leadership),
+    ai: groupScore(groupData.ai),
+    func: groupScore(groupData.func),
+    career: groupScore(groupData.career)
+  };
+
+  const rawScore = Math.round(
+    scores.core * 0.30 +
+    scores.leadership * 0.25 +
+    scores.ai * 0.10 +
+    scores.func * 0.25 +
+    scores.career * 0.10
+  );
+
+  const milBonus = isBadgeSelected('d-mil') ? 8 : 0;
+  const intlBonus = isBadgeSelected('d-intl') ? 5 : 0;
+  const techBonus = isBadgeSelected('d-tech') ? 4 : 0;
+  const healthBonus = isBadgeSelected('d-health') ? 3 : 0;
+  const startBonus = isBadgeSelected('d-start') ? 3 : 0;
+  const globalBonus = isBadgeSelected('d-global') ? 3 : 0;
+  const entBonus = isBadgeSelected('d-enterprise') ? 4 : 0;
+  const totalBonus = Math.min(milBonus + intlBonus + techBonus + healthBonus + startBonus + globalBonus + entBonus, 14);
+  const finalScore = Math.min(rawScore + Math.round(totalBonus * (rawScore / 100)), 99);
+
+  analysisResults = { critical, moderate, ontrack, strength, scores, finalScore, track, bonuses: { mil: milBonus, intl: intlBonus, tech: techBonus, health: healthBonus, start: startBonus, global: globalBonus, ent: entBonus } };
+
+  renderGapPanel(critical, moderate, ontrack, strength);
+  renderScorePanel(finalScore, scores, analysisResults.bonuses);
+  renderActionPanel(track);
+  renderPromptPanel(track, finalScore, critical, strength);
+
+  showPanel('gap');
+}
+
+function renderGapPanel(critical, moderate, ontrack, strength) {
+  const track = document.getElementById('track').options[document.getElementById('track').selectedIndex].text;
+  const role = document.getElementById('role').value || track;
+  document.getElementById('gap-summary-text').innerHTML = `
+    <p style="font-size:14px">Target: <strong>${role}</strong></p>
+    <p style="font-size:13px;color:var(--c-muted);margin-top:4px">${critical.length} critical gap${critical.length!==1?'s':''} · ${moderate.length} moderate gap${moderate.length!==1?'s':''} · ${strength.length} differentiator${strength.length!==1?'s':''} · ${ontrack.length} on track</p>
+  `;
+
+  function renderList(containerId, items, cls) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    if (!items.length) { c.innerHTML = '<p class="empty">None identified.</p>'; return; }
+    items.sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap)).forEach(e => {
+      const isStr = cls === 'strength';
+      const div = document.createElement('div');
+      div.className = `gap-item ${cls}`;
+      div.innerHTML = `
+        <div class="gap-name ${cls}">${e.name}</div>
+        <div class="gap-scores">You: ${e.my||'—'} · Market: ${e.mkt}</div>
+        <div class="gap-tag ${cls}">${isStr ? 'Differentiator' : cls === 'critical' ? 'Critical gap' : cls === 'moderate' ? 'Moderate gap' : 'On track'}</div>
+      `;
+      c.appendChild(div);
+    });
+  }
+
+  renderList('gaps-critical', critical, 'critical');
+  renderList('gaps-moderate', moderate, 'moderate');
+  renderList('gaps-strength', strength, 'strength');
+  renderList('gaps-ontrack', ontrack, 'ontrack');
+}
+
+function renderScorePanel(total, scores, bonuses) {
+  document.getElementById('total-score').textContent = total;
+  const label = total >= 80 ? 'Highly competitive' : total >= 65 ? 'Competitive — key gaps to close' : total >= 50 ? 'Developing — active gaps require action' : 'Early stage — significant work ahead';
+  const desc = total >= 80 ? 'You are well-positioned for your target track. Focus on differentiating and networking.' :
+               total >= 65 ? 'Strong foundation with a few critical gaps. A focused 60-day effort can shift this materially.' :
+               total >= 50 ? 'Good progress. Your top 2–3 gaps need structured action before applications peak.' :
+               'Start with your top critical gap, build one evidence artifact, and re-score in 30 days.';
+  document.getElementById('score-label').textContent = label;
+  document.getElementById('score-desc').textContent = desc;
+
+  const cats = [
+    { name: 'Core business acumen', key: 'core', weight: '30%' },
+    { name: 'Leadership & influence', key: 'leadership', weight: '25%' },
+    { name: 'Functional skills', key: 'func', weight: '25%' },
+    { name: 'AI & data readiness', key: 'ai', weight: '10%' },
+    { name: 'Career readiness signals', key: 'career', weight: '10%' },
+  ];
+  const container = document.getElementById('score-breakdown');
+  container.innerHTML = '';
+  cats.forEach(c => {
+    const s = scores[c.key] || 0;
+    const fillColor = s >= 75 ? 'var(--c-r4)' : s >= 55 ? 'var(--c-r2)' : 'var(--c-r1)';
+    const row = document.createElement('div');
+    row.className = 'score-bar-row';
+    row.innerHTML = `
+      <div class="score-bar-label">${c.name} <span style="color:var(--c-muted);font-size:11px">(${c.weight})</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill" style="width:${s}%;background:${fillColor}"></div></div>
+      <div class="score-bar-pct">${s}</div>
+    `;
+    container.appendChild(row);
+  });
+
+  const diffCard = document.getElementById('diff-card');
+  const diffBreak = document.getElementById('diff-breakdown');
+  const labels = { mil:'Military veteran background', intl:'International student / global perspective', tech:'Technical undergraduate degree', health:'Clinical/healthcare background', start:'Startup or founder experience', global:'Significant international experience', ent:'Enterprise-scale leadership' };
+  const bEntries = Object.entries(bonuses).filter(([k,v]) => v > 0);
+  if (bEntries.length) {
+    diffCard.style.display = 'block';
+    diffBreak.innerHTML = bEntries.map(([k,v]) => `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:13px">
+        <span style="flex:1;color:var(--c-text)">${labels[k]||k}</span>
+        <span style="font-family:'DM Mono',monospace;color:var(--c-green)">+${v} pts</span>
+      </div>
+    `).join('');
+  } else {
+    diffCard.style.display = 'none';
+  }
+}
+
+function renderActionPanel(track) {
+  const plan = ACTION_PLANS[track];
+  if (!plan) return;
+
+  function renderPhase(id, phaseClass, label, items) {
+    const el = document.getElementById(id);
+    el.innerHTML = `
+      <div class="action-phase-header">
+        <span class="phase-badge ${phaseClass}">${label}</span>
+      </div>
+      <ul class="action-list">${items.map(i => `<li>${i}</li>`).join('')}</ul>
+    `;
+    el.style.marginBottom = '20px';
+  }
+
+  renderPhase('action-30-block', 'phase-30', '30-day priorities', plan.d30);
+  renderPhase('action-60-block', 'phase-60', '60-day milestones', plan.d60);
+  renderPhase('action-90-block', 'phase-90', '90-day targets', plan.d90);
+
+  const adj = ADJACENT_ROLES[track] || [];
+  const adjContainer = document.getElementById('adjacent-roles');
+  adjContainer.innerHTML = adj.map(r => `<div class="adj-badge">${r}</div>`).join('');
+}
+
+function renderPromptPanel(track, total, critical, strength) {
+  const trackEl = document.getElementById('track');
+  const trackName = trackEl.options[trackEl.selectedIndex].text;
+  const role = document.getElementById('role').value || 'not yet specified';
+  const industry = document.getElementById('industry').value || 'not yet specified';
+  const yr = document.getElementById('year').value;
+  const yearLabel = yr === 'y1' ? '1st Year MBA (seeking internship)' : yr === 'y2' ? '2nd Year MBA (seeking full-time)' : 'MBA student';
+  const yrs = document.getElementById('yrsexp').value;
+
+  const diffFlags = [];
+  if (isBadgeSelected('d-mil')) diffFlags.push('Military veteran');
+  if (isBadgeSelected('d-intl')) diffFlags.push('International student');
+  if (isBadgeSelected('d-tech')) diffFlags.push('Technical undergraduate background');
+  if (isBadgeSelected('d-health')) diffFlags.push('Clinical/healthcare background');
+  if (isBadgeSelected('d-start')) diffFlags.push('Startup or founder experience');
+  if (isBadgeSelected('d-global')) diffFlags.push('Significant international experience');
+  if (isBadgeSelected('d-enterprise')) diffFlags.push('Enterprise leadership (500+ org)');
+
+  const critNames = critical.slice(0, 5).map(x => x.name).join(', ') || 'None identified — review skills input';
+  const strNames = strength.slice(0, 4).map(x => x.name).join(', ') || 'To be identified';
+  const clarity = document.getElementById('clarity').value;
+  const clarityLabel = ['','Still exploring options','Has direction, refining it','Clear target, building toward it','Highly focused and ready to apply'][clarity];
+
+  const prompt = `You are an expert MBA career strategist with 15+ years in enterprise talent acquisition. You think like a hiring manager and a recruiter simultaneously — not like a career counselor. You are brutally honest, specific, and action-oriented. Your job is to help this MBA student close gaps and win the role they want.
+
+━━━━━━━━━━━━━━━━━━━━━━
+STUDENT PROFILE
+━━━━━━━━━━━━━━━━━━━━━━
+Program: University of Utah, David Eccles School of Business
+Status: ${yearLabel}
+Professional experience: ${yrs}
+Career clarity level: ${clarityLabel}
+
+Target track: ${trackName}
+Target role: ${role}
+Target industry: ${industry}
+
+Career readiness score: ${total}/100
+Background differentiators: ${diffFlags.length ? diffFlags.join(', ') : 'None flagged'}
+
+SKILLS GAP ANALYSIS:
+Critical gaps (employer-vs-student delta ≥2): ${critNames}
+Key differentiators / above-market strengths: ${strNames}
+
+━━━━━━━━━━━━━━━━━━━━━━
+STUDENT RESUME / EVIDENCE (pasted below)
+━━━━━━━━━━━━━━━━━━━━━━
+[PASTE YOUR FULL RESUME TEXT HERE — include all work history, quantified achievements, key projects, certifications, MBA coursework, military service details, international experience, and any portfolio links]
+
+━━━━━━━━━━━━━━━━━━━━━━
+YOUR ANALYSIS TASKS
+━━━━━━━━━━━━━━━━━━━━━━
+Complete all six sections below. Be specific, use employer language, and do not hedge.
+
+1. TRANSFERABILITY MAP
+Identify 4–6 experiences or skills from the resume that translate directly and credibly to the target role. Reframe them using the language a hiring manager in this track would use — not the language the student used.
+
+2. CRITICAL GAP COACHING
+For each critical gap listed above: give one specific, actionable step this student can take THIS WEEK — not a generic resource recommendation. Make it concrete enough to execute without further clarification.
+
+3. COMPETITIVE DIFFERENTIATORS
+Identify what this student can legitimately claim as above-market relative to the typical MBA applicant. Be specific to their background. For military veterans: name the exact leadership competencies that translate; do not generalize. For international students: name the cross-cultural and market intelligence advantages. For technical backgrounds: name the specific credibility edge in data-heavy roles.
+
+4. CAREER NARRATIVE (draft)
+Write a 4-sentence professional summary optimized for the target role. It should read like a confident recruiter describing a strong candidate — not like a self-promotional resume summary. Use the third person.
+
+5. HONEST RED FLAGS
+Name 1–2 things a recruiter or hiring manager would likely push back on when reviewing this profile. Be direct. Avoid softening language. Then give one specific action to address each.
+
+6. ADJACENT PATH CHECK
+Based on the skills profile and background, identify one adjacent role where this student might have a stronger or faster path to an offer. Explain the reasoning briefly.`;
+
+  document.getElementById('prompt-text').textContent = prompt;
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--c-green)';
+    setTimeout(() => { btn.textContent = 'Copy prompt'; btn.style.background = ''; }, 2500);
+  }).catch(() => {
+    const el = document.getElementById('prompt-text');
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+
+function openClaude() {
+  window.open('https://claude.ai', '_blank');
+}
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  const navMap = { target:0, skills:1, gap:2, score:3, action:4, prompt:5 };
+  document.querySelectorAll('.nav-item')[navMap[name]]?.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// Initialize skill grids
+buildSkillGrid('grid-core', SKILLS_DEF.core);
+buildSkillGrid('grid-leadership', SKILLS_DEF.leadership);
+buildSkillGrid('grid-ai', SKILLS_DEF.ai);
+buildSkillGrid('grid-career', SKILLS_DEF.career);
+</script>
+</body>
+</html>
