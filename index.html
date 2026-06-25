@@ -1,33 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eccles MBA — Evidence-Backed Skills Engine</title>
+
+  <!-- React + Babel via CDN (cdnjs). For GitHub Pages this all loads from the CDN; nothing to build. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    * { box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- type="text/babel" lets the browser compile the JSX below. -->
+  <script type="text/babel" data-presets="react">
 // ═════════════════════════════════════════════════════════════
 // ECCLES MBA CAREER OS — EVIDENCE-BACKED SKILLS ENGINE  (v2.1)
 // Self-rating = a claim. Multiple real artifacts = the proof.
 // ─────────────────────────────────────────────────────────────
-// CORE MODEL
-//   - "Evidence-Backed" naming (accurate at one source or five).
-//   - MULTI-SOURCE evidence: Resume + LinkedIn + GitHub + Certs +
-//     Portfolio. Every source optional; resume-only is a valid run.
-//   - TRUST-WEIGHTED BLENDING: each source carries a trust weight;
-//     a skill's score is the trust-weighted average of the sources
-//     that actually evidence it. This produces legitimate tenths
-//     (3.5 = resume 3 + GitHub 4); the model is NEVER asked to
-//     invent a decimal, so the precision is real and reproducible.
-//   - COACH CO-SIGN PROVENANCE: every sign-off records who + when.
-//   - OUTCOME TRACKING: structured capture for outcome validation.
-//   - HARDENED EVIDENCE RUBRIC with explicit 0-4 anchors per source.
+// Single-file HTML build. React + Babel loaded from CDN above.
 //
-// NEW IN v2.1 (UX + stability)
-//   1. Source-completeness indicator on the Evidence step.
-//   2. Evidence caching: identical inputs reuse the prior result,
-//      so a refresh or re-click never re-rolls the score.
-//   3. Band label outranks the number in the score tiles, so a
-//      small decimal wobble never changes the headline message.
-//   4. Time estimate on the Evidence step ("30-60 seconds").
-//   5. Coach name persists across the session (guarded storage).
-//
-// Styling matches the Eccles Role Alignment Score build.
+// ⚠ NOTE ON SCORING: the evidence step calls the Anthropic API
+// directly from the browser (callClaude → api.anthropic.com).
+// That works inside Claude's artifact sandbox, but NOT on a bare
+// GitHub Pages deploy — Pages is fully public and has no API key.
+// To make scoring work when deployed, route callClaude() through
+// a small serverless proxy that holds the key (Cloudflare Worker,
+// Vercel/Netlify function). Setup 1, 2, 4, 5 all work without it;
+// only the evidence-scoring call needs the proxy.
 // ═════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect, useMemo } from "react";
+const { useState, useEffect, useMemo } = React;
 
 // ── Brand ──────────────────────────────────────────────────────
 const U = {
@@ -173,14 +182,6 @@ const RATING_GUIDE = [
 ];
 
 // ── Evidence sources + TRUST WEIGHTS ───────────────────────────
-// Trust weight reflects how hard a source is to inflate.
-// Resume/GitHub/Certs are hard to fake credibly → 1.0.
-// LinkedIn self-text is easy to inflate → 0.85 (its third-party
-// recommendations are the trustworthy part, and the rubric tells
-// the model to lean on those).
-// Narrow sources (GitHub/Certs/Portfolio) simply return no evidence
-// for skills they can't speak to, so they never drag unrelated
-// skills down — they only ever lift the skills they actually cover.
 const SOURCE_META = {
   resume:    { key: "r", label: "Resume",         trust: 1.00 },
   linkedin:  { key: "l", label: "LinkedIn",       trust: 0.85 },
@@ -199,7 +200,6 @@ const CERT_OPTIONS = [
 // ── Claude API ─────────────────────────────────────────────────
 const MBA_ANCHOR = `Score against MBA hiring standards: this candidate holds or is pursuing an MBA and targets a mid-to-senior individual-contributor or manager-level role. Apply the standard a corporate recruiter or hiring manager would use for an MBA lateral hire — not an entry-level candidate.`;
 
-// Hardened, source-aware rubric. Integer 0–4 PER SOURCE.
 const RUBRIC = `SCORE EACH SKILL 0-4 PER SOURCE, using this exact rubric:
 0 = nothing in this source supports the skill.
 1 = named only — a keyword, tool, or course listed with no evidence of applying it.
@@ -240,7 +240,7 @@ async function callClaude(content, maxTokens = 2000) {
     if (e.message === "RATE_LIMIT") throw new Error("You've hit your Claude usage limit. Try again in a few minutes, or upgrade to Pro for more usage.");
     if (e.message === "AUTH")       throw new Error("Authentication error — sign into Claude.ai and refresh the page.");
     if (e.message === "API_ERROR")  throw new Error("The AI service returned an error. Try again in a moment.");
-    if (String(e.message).includes("fetch")) throw new Error("Network error — check your connection and try again.");
+    if (String(e.message).includes("fetch")) throw new Error("Network error — check your connection and try again. (On GitHub Pages, scoring needs a serverless API proxy — see the note at the top of the file.)");
     throw e;
   }
 }
@@ -269,10 +269,9 @@ function bandOf(score) {
   if (score >= 60) return { label: "Development Needed",       color: "#D85A30" };
   return            { label: "At-Risk — act now",              color: U.red };
 }
-const pct = (avg4) => Math.round((avg4 / 4) * 1000) / 10;   // → one decimal
+const pct = (avg4) => Math.round((avg4 / 4) * 1000) / 10;
 const round1 = (x) => Math.round(x * 10) / 10;
 
-// Confidence rises with corroboration: more agreeing sources = stronger.
 function deriveStrength(val, nSources) {
   if (nSources === 0) return "none";
   if (nSources >= 2 && val >= 2.5) return "strong";
@@ -287,7 +286,6 @@ const STRENGTH = {
   none:     { label: "No evidence",     color: U.red,   dot: "○○○" },
 };
 
-// Blend one skill's per-source integers into a trust-weighted tenth.
 function blendSkill(rec) {
   if (!rec) return { val: 0, sources: [], strength: "none", note: "" };
   const parts = [];
@@ -301,15 +299,14 @@ function blendSkill(rec) {
   return { val, sources: parts, strength: deriveStrength(val, parts.length), note: rec.j || "" };
 }
 
-// Build the whole scored model from raw inputs.
 function buildModel(activeCats, self, evid, coach) {
   const rows = activeCats.map((cat) => {
     const skills = cat.skills.map((sk) => {
       const s = self[sk.id] ?? null;
       const blend = blendSkill(evid ? evid[sk.id] : null);
-      const sign = coach[sk.id] || null;            // { by, at } or null
+      const sign = coach[sk.id] || null;
       const verified = !!sign;
-      const vVal = verified ? s : blend.val;        // coach-signed → trust the claim
+      const vVal = verified ? s : blend.val;
       const gap = (s != null) ? round1(s - blend.val) : null;
       return { sk, s, blend, sign, verified, vVal, gap };
     });
@@ -344,10 +341,10 @@ function Btn({ children, onClick, busy, busyText, color, style, disabled }) {
   const off = busy || disabled;
   return <button onClick={onClick} disabled={off} style={{ marginTop: 16, width: "100%", background: off ? "#A8A8A8" : (color || U.red), color: "#fff", border: "none", borderRadius: 6, padding: "12px 18px", fontSize: 14, fontWeight: 700, fontFamily: U.sans, cursor: off ? "default" : "pointer", letterSpacing: 0.3, ...style }}>{busy ? (busyText || "Analyzing…") : children}</button>;
 }
-function Notice({ kind, children }) {
+function Notice({ kind, children, style }) {
   const map = { err: ["#FCEBEB", "#A32D2D"], ok: ["#EAF3DE", U.green], info: ["#FBF3E8", U.amber], blue: ["#E6F1FB", U.blue] };
   const [bg, fg] = map[kind] || map.info;
-  return <div style={{ background: bg, color: fg, borderRadius: 6, padding: "11px 14px", fontSize: 13, lineHeight: 1.6, marginTop: 14 }}>{children}</div>;
+  return <div style={{ background: bg, color: fg, borderRadius: 6, padding: "11px 14px", fontSize: 13, lineHeight: 1.6, marginTop: 14, ...style }}>{children}</div>;
 }
 function useStagedBusy(busy, stages) {
   const [i, setI] = useState(0);
@@ -373,8 +370,7 @@ function SourceInput({ id, label, file, setFile, text, setText, accept, placehol
   );
 }
 
-// Guarded storage — persists small values across refresh when available,
-// and silently no-ops if storage is blocked, so it never breaks the app.
+// Guarded storage — persists small values when available, no-ops if blocked.
 const STORE = {
   get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
   set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} },
@@ -383,19 +379,18 @@ const STORE = {
 // ══════════════════════════════════════════════════════════════
 // ROOT
 // ══════════════════════════════════════════════════════════════
-export default function App() {
+function App() {
   const [step, setStep]     = useState(1);
   const [track, setTrack]   = useState("");
   const [diffs, setDiffs]   = useState({});
   const [self, setSelf]     = useState({});
   const [evid, setEvid]     = useState(null);
-  const [evidSig, setEvidSig] = useState("");   // signature of last scored inputs (caching)
-  const [coach, setCoach]   = useState({});     // skillId -> { by, at }
+  const [evidSig, setEvidSig] = useState("");
+  const [coach, setCoach]   = useState({});
   const [coachName, setCoachName] = useState(() => STORE.get("eccles_coach") || "");
   const [sourcesUsed, setSourcesUsed] = useState([]);
   const [outcomes, setOutcomes] = useState({});
 
-  // (#5) Coach name persists across the session / refresh.
   useEffect(() => { STORE.set("eccles_coach", coachName); }, [coachName]);
 
   useEffect(() => {
@@ -548,7 +543,7 @@ function SelfAssess({ activeCats, track, self, setSelf, back, next }) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// STEP 3 — EVIDENCE (multi-source, independent scoring)
+// STEP 3 — EVIDENCE
 // ══════════════════════════════════════════════════════════════
 function Evidence({ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUsed, back, next }) {
   const [resumeF, setResumeF] = useState(null); const [resumeT, setResumeT] = useState("");
@@ -562,7 +557,6 @@ function Evidence({ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUse
   const certList = [...Object.keys(certs).filter((k) => certs[k]), ...(certOther.trim() ? [certOther.trim()] : [])];
   const toggleCert = (c) => setCerts((s) => ({ ...s, [c]: !s[c] }));
 
-  // (#1) Source-completeness — how much of the evidence picture is filled in.
   const fileSig = (file) => file ? `${file.name}:${file.size}` : "";
   const sources = [
     { has: !!(resumeF || resumeT.trim()) },
@@ -574,9 +568,6 @@ function Evidence({ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUse
   const filledCount = sources.filter((s) => s.has).length;
   const completeness = Math.round((filledCount / sources.length) * 100);
 
-  // (#2) Caching — a stable signature of every input. If it hasn't changed
-  // since the last successful scoring, we skip the API call and reuse results,
-  // so a refresh or an accidental re-click never re-rolls the score.
   const signature = [
     resumeT.trim(), fileSig(resumeF), liT.trim(), fileSig(liF), ghT.trim(),
     certList.join(","), portT.trim(), fileSig(portF), allSkills.map((s) => s.id).join(","),
@@ -586,7 +577,6 @@ function Evidence({ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUse
     setErr("");
     const hasResume = resumeF || resumeT.trim();
     if (!hasResume) return setErr("A resume is required as the primary source. Add other sources to strengthen the read.");
-    // Cached: identical inputs already scored — reuse, don't re-run the model.
     if (evid && signature === evidSig) { next(); return; }
     setBusy(true);
     try {
@@ -640,7 +630,7 @@ Return ONLY valid JSON, no markdown, shaped exactly:
 
       const r = parseJSON(await callClaude(content, 3200));
       setEvid(r.skills || {});
-      setEvidSig(signature);   // (#2) remember exactly what produced this result
+      setEvidSig(signature);
       setSourcesUsed(present.map((k) => Object.values(SOURCE_META).find((m) => m.key === k).label));
       next();
     } catch (e) { setErr(e.message); }
@@ -671,7 +661,6 @@ Return ONLY valid JSON, no markdown, shaped exactly:
       <SourceInput id="ev-port" label="Portfolio / work samples (PM, strategy, marketing)" file={portF} setFile={setPortF} text={portT} setText={setPortT} accept=".pdf,.png,.jpg,.jpeg,.txt" placeholder="Paste a link or describe a work sample, case, or project you can show." note="Score reflects the skill the sample actually demonstrates." />
 
       <div style={{ borderTop: `1px solid ${U.grayLt}`, marginTop: 20, paddingTop: 18 }}>
-        {/* (#1) Source-completeness indicator */}
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: U.muted, marginBottom: 6 }}>
           <span>Evidence read · <b style={{ color: U.ink }}>{filledCount} of {sources.length}</b> sources added</span>
           <span style={{ fontWeight: 700, color: completeness >= 60 ? U.green : completeness >= 40 ? U.blue : U.amber }}>{completeness}% complete</span>
@@ -773,9 +762,6 @@ function Verified({ model, track, evid, sourcesUsed, coach, setCoach, coachName,
 
 function ScoreTile({ label, sub, value, faded, accent }) {
   const b = bandOf(value);
-  // (#3) The BAND is the headline — it's the stable, meaningful signal.
-  // The number rides underneath as supporting detail, so a small decimal
-  // wobble on re-run never moves the message a student reads first.
   return (
     <div style={{ border: `1px solid ${accent ? U.red : U.grayLt}`, borderRadius: 8, padding: "14px", background: accent ? "#FFF5F5" : "#FAFAFA", opacity: faded ? 0.85 : 1 }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: accent ? U.red : U.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
@@ -922,3 +908,9 @@ function Outcomes({ model, track, diffs, outcomes, setOutcomes, coachName, back 
     </>
   );
 }
+
+// ── Mount ──────────────────────────────────────────────────────
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
