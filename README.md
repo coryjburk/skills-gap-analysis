@@ -4,7 +4,7 @@
 
 ### ▶ For users — start here!
 
-> 1. **Open the tool:** [**Launch the Skills Engine →**]([https://coryjburk.github.io/skills-gap-analysis/]
+> 1. **Open the tool:** [**Launch the Skills Engine →**][Skills Gap Analysis (vC)](https://coryjburk.github.io/skills-gap-analysis/)
 > 2. **Rate yourself,** then add your resume (LinkedIn, GitHub, and certifications make the read sharper).
 > 3. **Export your report** and bring it to your coach — then re-run every 6 weeks to watch your scores move.
 
