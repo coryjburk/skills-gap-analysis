@@ -2,7 +2,7 @@
 
 **Full-Time MBA Program · David Eccles School of Business · University of Utah**
 
-### ▶ For users — start here
+### ▶ For users — start here.
 
 > 1. **Open the tool:** [**Launch the Skills Engine →**]([https://coryjburk.github.io/YOUR-REPO/](https://coryjburk.github.io/skills-gap-analysis/))
 > 2. **Rate yourself,** then add your resume (LinkedIn, GitHub, and certifications make the read sharper).
