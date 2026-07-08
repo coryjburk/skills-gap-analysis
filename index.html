@@ -861,8 +861,13 @@ function Outcomes({ model, track, diffs, outcomes, setOutcomes, coachName, back 
     return L.join("\n");
   }
   function doCopy() { navigator.clipboard.writeText(build()).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500); }).catch(() => alert("Copy not supported — use Print.")); }
-  function doPrint() { const w = window.open("", "_blank"); w.document.write(`<pre style="font-family:monospace;font-size:13px;padding:24px;white-space:pre-wrap;">${build()}</pre>`); w.document.close(); w.print(); }
-
+  function doPrint() {
+    const escP = (s) => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
+    const w = window.open("", "_blank");
+    if (!w) { alert("Pop-up blocked — allow pop-ups for this site, or use Copy instead."); return; }
+    w.document.write(`<pre style="font-family:monospace;font-size:13px;padding:24px;white-space:pre-wrap;">${escP(build())}</pre>`);
+    w.document.close(); w.print();
+  }
   return (
     <>
       <Card style={{ borderLeft: `4px solid ${U.red}` }}>
