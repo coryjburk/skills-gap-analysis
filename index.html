@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eccles MBA — Evidence-Backed Skills Engine</title>
+  <title>Full-Time MBA Program · David Eccles School of Business — Evidence-Backed Skills Engine</title>
 
-  <!-- React + Babel via CDN (cdnjs). For GitHub Pages this all loads from the CDN; nothing to build. -->
+  <!-- React + Babel via CDN (cdnjs). Loads from the CDN; nothing to build. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
@@ -21,19 +21,18 @@
   <!-- type="text/babel" lets the browser compile the JSX below. -->
   <script type="text/babel" data-presets="react">
 // ═════════════════════════════════════════════════════════════
-// ECCLES MBA CAREER OS — EVIDENCE-BACKED SKILLS ENGINE  (v2.1)
+// FULL-TIME MBA PROGRAM · DAVID ECCLES SCHOOL OF BUSINESS CAREER OS — EVIDENCE-BACKED SKILLS ENGINE  (v2.2)
 // Self-rating = a claim. Multiple real artifacts = the proof.
 // ─────────────────────────────────────────────────────────────
-// Single-file HTML build. React + Babel loaded from CDN above.
+// DISTRIBUTION: published Claude artifact (claude.ai). Inside the
+// artifact environment, callClaude() works with no API key — auth
+// is injected and usage bills the signed-in student's own Claude
+// account. Students must be logged into Claude.ai to run scoring.
 //
-// ⚠ NOTE ON SCORING: the evidence step calls the Anthropic API
-// directly from the browser (callClaude → api.anthropic.com).
-// That works inside Claude's artifact sandbox, but NOT on a bare
-// GitHub Pages deploy — Pages is fully public and has no API key.
-// To make scoring work when deployed, route callClaude() through
-// a small serverless proxy that holds the key (Cloudflare Worker,
-// Vercel/Netlify function). Setup 1, 2, 4, 5 all work without it;
-// only the evidence-scoring call needs the proxy.
+// This file is NOT for bare GitHub Pages: outside Claude.ai the
+// API call has no key and will fail. The GitHub repo holds this
+// source for version control only; the Pages URL should redirect
+// to the published artifact link.
 // ═════════════════════════════════════════════════════════════
 
 const { useState, useEffect, useMemo } = React;
@@ -240,7 +239,7 @@ async function callClaude(content, maxTokens = 2000) {
     if (e.message === "RATE_LIMIT") throw new Error("You've hit your Claude usage limit. Try again in a few minutes, or upgrade to Pro for more usage.");
     if (e.message === "AUTH")       throw new Error("Authentication error — sign into Claude.ai and refresh the page.");
     if (e.message === "API_ERROR")  throw new Error("The AI service returned an error. Try again in a moment.");
-    if (String(e.message).includes("fetch")) throw new Error("Network error — check your connection and try again. (On GitHub Pages, scoring needs a serverless API proxy — see the note at the top of the file.)");
+    if (String(e.message).includes("fetch")) throw new Error("Network error — check your connection, make sure you're signed into Claude.ai, and try again.");
     throw e;
   }
 }
@@ -370,10 +369,13 @@ function SourceInput({ id, label, file, setFile, text, setText, accept, placehol
   );
 }
 
-// Guarded storage — persists small values when available, no-ops if blocked.
+// In-memory store. Browser storage (localStorage/sessionStorage) is
+// blocked in the Claude artifact environment, so values live for the
+// session only — which is all the coach-name convenience needs.
+const MEM = {};
 const STORE = {
-  get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
-  set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} },
+  get: (k) => (k in MEM ? MEM[k] : null),
+  set: (k, v) => { MEM[k] = v; },
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -680,7 +682,7 @@ Return ONLY valid JSON, no markdown, shaped exactly:
           <Btn onClick={run} busy={busy} busyText={stage} style={{ marginTop: 0 }}>{(evid && signature === evidSig) ? "View your results →" : "Score my evidence →"}</Btn>
         </div>
         {!busy && !(evid && signature === evidSig) && (resumeF || resumeT.trim()) &&
-          <div style={{ fontSize: 11.5, color: U.muted, textAlign: "center", marginTop: 8 }}>Scoring usually takes 30–60 seconds. Your inputs are analyzed, not stored — export your report to keep it.</div>}
+          <div style={{ fontSize: 11.5, color: U.muted, textAlign: "center", marginTop: 8 }}>Scoring usually takes 30–60 seconds and uses your own Claude account's usage. Your inputs are analyzed, not stored — export your report to keep it.</div>}
       </div>
     </Card>
   );
@@ -902,7 +904,7 @@ function Outcomes({ model, track, diffs, outcomes, setOutcomes, coachName, back 
 
       <Card style={{ background: "#F9F9F9" }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: U.ink, marginBottom: 4 }}>Export your report</div>
-        <div style={{ fontSize: 13, color: U.muted, marginBottom: 4 }}>Includes scores, evidence sources, coach sign-offs, differentiators, and this snapshot's outcomes — the full record for your coach and for tracking progress.</div>
+        <div style={{ fontSize: 13, color: U.muted, marginBottom: 4 }}>Includes scores, evidence sources, coach sign-offs, differentiators, and this snapshot's outcomes — the full record for your coach and for tracking progress. Nothing is saved when you close this page, so export before you leave.</div>
         <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
           <button onClick={doCopy} style={{ flex: 1, background: U.ink, color: "#fff", border: "none", borderRadius: 6, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: U.sans }}>{copied ? "✓ Copied!" : "📋 Copy full report"}</button>
           <button onClick={doPrint} style={{ flex: 1, background: "#444", color: "#fff", border: "none", borderRadius: 6, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: U.sans }}>🖨 Print / Save PDF</button>
