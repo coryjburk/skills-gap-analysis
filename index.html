@@ -3,31 +3,921 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eccles MBA — Evidence-Backed Skills Engine (moved)</title>
-  <meta http-equiv="refresh" content="0; url=https://claude.ai/public/artifacts/8f78efeb-2283-453f-ae83-f6514fde9385" />
-  <script>
-    // Belt and suspenders: some browsers deprioritize meta refresh.
-    window.location.replace("https://claude.ai/public/artifacts/8f78efeb-2283-453f-ae83-f6514fde9385");
-  </script>
+  <title>Full-Time MBA Program · David Eccles School of Business — Evidence-Backed Skills Engine</title>
+
+  <!-- React + Babel via CDN (cdnjs). Loads from the CDN; nothing to build. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+
   <style>
-    body { margin: 0; font-family: "Source Sans 3", system-ui, sans-serif; background: #fff; color: #262626; }
-    .wrap { max-width: 560px; margin: 12vh auto 0; padding: 0 24px; text-align: center; }
-    .bar { height: 5px; background: #CC0000; }
-    .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #CC0000; font-weight: 700; margin-top: 40px; }
-    h1 { font-family: Georgia, serif; font-size: 24px; font-weight: 600; color: #1A1A1A; margin: 8px 0 14px; }
-    p { font-size: 14px; line-height: 1.6; color: #6B6B6B; }
-    a.btn { display: inline-block; margin-top: 18px; background: #CC0000; color: #fff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 22px; border-radius: 6px; }
-    .foot { margin-top: 60px; font-size: 11.5px; color: #9A9A9A; }
+    html, body { margin: 0; padding: 0; background: #fff; }
+    * { box-sizing: border-box; }
   </style>
 </head>
 <body>
-  <div class="bar"></div>
-  <div class="wrap">
-    <div class="kicker">Full-Time MBA Program · David Eccles School of Business</div>
-    <h1>The Skills Engine has moved</h1>
-    <p>The Evidence-Backed Skills Engine now runs on Claude.ai so that evidence scoring works for everyone. You're being redirected automatically — if nothing happens, use the button below. You'll need to be signed into a Claude.ai account (free is fine) to run the scoring step.</p>
-    <a class="btn" href="https://claude.ai/public/artifacts/8f78efeb-2283-453f-ae83-f6514fde9385">Open the Skills Engine →</a>
-    <div class="foot">Evidence-Backed Skills Engine · Full-Time MBA Program · David Eccles School of Business · University of Utah</div>
-  </div>
+  <div id="root"></div>
+
+  <!-- type="text/babel" lets the browser compile the JSX below. -->
+  <script type="text/babel" data-presets="react">
+// ═════════════════════════════════════════════════════════════
+// FULL-TIME MBA PROGRAM · DAVID ECCLES SCHOOL OF BUSINESS CAREER OS — EVIDENCE-BACKED SKILLS ENGINE  (v2.2)
+// Self-rating = a claim. Multiple real artifacts = the proof.
+// ─────────────────────────────────────────────────────────────
+// DISTRIBUTION: published Claude artifact (claude.ai). Inside the
+// artifact environment, callClaude() works with no API key — auth
+// is injected and usage bills the signed-in student's own Claude
+// account. Students must be logged into Claude.ai to run scoring.
+//
+// This file is NOT for bare GitHub Pages: outside Claude.ai the
+// API call has no key and will fail. The GitHub repo holds this
+// source for version control only; the Pages URL should redirect
+// to the published artifact link.
+// ═════════════════════════════════════════════════════════════
+
+const { useState, useEffect, useMemo } = React;
+
+// ── Brand ──────────────────────────────────────────────────────
+const U = {
+  red: "#CC0000", redDark: "#890000", black: "#1A1A1A",
+  gray: "#708E99", grayLt: "#E2E6E6", paper: "#FFFFFF",
+  ink: "#262626", muted: "#6B6B6B", green: "#3B6D11",
+  amber: "#854F0B", blue: "#185FA5",
+  sans: "'Source Sans 3','Myriad Pro',system-ui,sans-serif",
+  serif: "'Source Serif 4','Kepler',Georgia,serif",
+};
+
+// ── Category weights (identical to the OS Readiness Score) ──────
+const CATS = [
+  { id: "core",   label: "Core Business Acumen",        weight: 30 },
+  { id: "lead",   label: "Leadership & Influence",      weight: 25 },
+  { id: "func",   label: "Functional Skills",           weight: 25 },
+  { id: "ai",     label: "AI, Data & Modern Workforce", weight: 10 },
+  { id: "career", label: "Career Readiness Signals",    weight: 10 },
+];
+
+const SKILLS = {
+  core: [
+    { id: "core_fin",  name: "Financial statement literacy",      ev: "P&L / budget ownership, cost or margin metrics" },
+    { id: "core_strat",name: "Strategic & competitive analysis",  ev: "analysis that drove a real decision" },
+    { id: "core_data", name: "Data-driven decision making",       ev: "decisions tied to metrics, A/B results" },
+    { id: "core_cust", name: "Customer & market insight",         ev: "customer research, segmentation work" },
+    { id: "core_ops",  name: "Operational & process fluency",     ev: "a process you ran, scaled, or improved" },
+  ],
+  lead: [
+    { id: "lead_infl", name: "Cross-functional influence",        ev: "led across teams without authority" },
+    { id: "lead_team", name: "Team leadership & people mgmt",     ev: "direct reports, headcount, hiring" },
+    { id: "lead_comm", name: "Executive communication & presence",ev: "presented to senior leaders" },
+    { id: "lead_stak", name: "Stakeholder management",            ev: "managed clients or senior stakeholders" },
+    { id: "lead_neg",  name: "Negotiation & conflict resolution", ev: "negotiated deals or resolved disputes" },
+  ],
+  ai: [
+    { id: "ai_llm",   name: "AI / LLM fluency in workflow",       ev: "AI tools in real deliverables" },
+    { id: "ai_excel", name: "Data analysis (Excel / SQL)",        ev: "analysis that produced a finding" },
+    { id: "ai_viz",   name: "Data visualization & storytelling",  ev: "dashboards, Tableau/PowerBI" },
+    { id: "ai_prompt",name: "AI-augmented work & prompting",      ev: "prompts/automations others reused" },
+    { id: "ai_auto",  name: "Automation & no-code tools",         ev: "automated a workflow" },
+    { id: "ai_collab",name: "Digital collaboration & tooling",    ev: "ran team tools (Jira, Asana...)" },
+  ],
+  career: [
+    { id: "car_quant",name: "Quantified achievements",            ev: "bullets with %, $, time, or scale" },
+    { id: "car_narr", name: "Clear career narrative",             ev: "coherent through-line across roles" },
+    { id: "car_net",  name: "Professional network depth",         ev: "industry ties, referrals, community" },
+    { id: "car_intv", name: "Interview readiness",                ev: "STAR stories, mock interviews" },
+    { id: "car_brand",name: "Personal brand / online presence",   ev: "strong LinkedIn, portfolio, publishing" },
+  ],
+};
+
+const FUNC = {
+  pm: { label: "Product Management / Product Marketing", skills: [
+    { id: "pm_road",  name: "Roadmapping & prioritization",     ev: "owned a roadmap" },
+    { id: "pm_disc",  name: "User research & discovery",        ev: "ran discovery that shaped product" },
+    { id: "pm_exp",   name: "Metrics & experimentation (A/B)",  ev: "moved a product metric" },
+    { id: "pm_tech",  name: "Technical fluency w/ engineering", ev: "specs, APIs, close eng work" },
+    { id: "pm_gtm",   name: "Go-to-market & positioning",       ev: "launched a product" },
+    { id: "pm_vision",name: "Product strategy & vision",        ev: "set product direction" },
+  ]},
+  ops: { label: "Operations / Supply Chain", skills: [
+    { id: "ops_lean", name: "Process optimization (Lean/6σ)",   ev: "Lean/Six Sigma with a gain" },
+    { id: "ops_scm",  name: "Supply chain & logistics",         ev: "sourcing, logistics, fulfillment" },
+    { id: "ops_dem",  name: "Demand planning & forecasting",    ev: "forecasting, S&OP, inventory" },
+    { id: "ops_proc", name: "Vendor & procurement mgmt",        ev: "supplier negotiation, savings" },
+    { id: "ops_kpi",  name: "Operations analytics & KPIs",      ev: "ops dashboards, KPI tracking" },
+    { id: "ops_pm",   name: "Project & program management",     ev: "ran programs end-to-end" },
+  ]},
+  fin: { label: "Finance / Investment", skills: [
+    { id: "fin_model",name: "Financial modeling (3-stmt / DCF)",ev: "built models, DCF, LBO" },
+    { id: "fin_val",  name: "Valuation & corporate finance",    ev: "valuation, M&A work" },
+    { id: "fin_dd",   name: "Investment analysis & diligence",  ev: "diligence, IC memos" },
+    { id: "fin_cap",  name: "Capital markets knowledge",        ev: "debt/equity, financing" },
+    { id: "fin_excel",name: "Excel / financial systems",        ev: "advanced Excel ownership" },
+    { id: "fin_risk", name: "Risk & portfolio management",      ev: "risk analysis, portfolio work" },
+  ]},
+  strat: { label: "Strategy / Consulting", skills: [
+    { id: "str_solve",name: "Structured problem solving",       ev: "framework-driven analysis" },
+    { id: "str_size", name: "Market sizing & business casing",  ev: "TAM/sizing, business cases" },
+    { id: "str_cli",  name: "Client management & advisory",     ev: "advised clients/leaders" },
+    { id: "str_hyp",  name: "Hypothesis-driven analysis",       ev: "hypothesis-led work" },
+    { id: "str_slide",name: "Slide writing & exec storytelling",ev: "exec decks that drove decisions" },
+    { id: "str_chg",  name: "Change management",                ev: "led adoption / org change" },
+  ]},
+  hc: { label: "Healthcare Management", skills: [
+    { id: "hc_sys",   name: "Healthcare systems & policy",      ev: "payer/provider, policy work" },
+    { id: "hc_ops",   name: "Clinical operations & workflow",   ev: "clinical workflow improvement" },
+    { id: "hc_econ",  name: "Healthcare economics & reimburse.",ev: "reimbursement, value-based care" },
+    { id: "hc_reg",   name: "Regulatory & compliance (HIPAA)",  ev: "compliance, HIPAA programs" },
+    { id: "hc_pop",   name: "Population health & quality",      ev: "quality metrics, pop health" },
+    { id: "hc_data",  name: "Healthcare data & analytics",      ev: "claims/EHR analytics" },
+  ]},
+  entr: { label: "Entrepreneurship / Venture", skills: [
+    { id: "entr_disc",  name: "Opportunity discovery & validation", ev: "customer discovery, problem-solution fit, MVP tests" },
+    { id: "entr_econ",  name: "Business model & unit economics",    ev: "CAC/LTV, revenue model, path to profitability" },
+    { id: "entr_raise", name: "Fundraising & investor relations",   ev: "raised capital, pitched investors, term sheets" },
+    { id: "entr_mvp",   name: "Product / MVP build & iteration",    ev: "shipped an MVP and iterated on it" },
+    { id: "entr_gtm",   name: "Early go-to-market & traction",      ev: "landed first customers, growth from zero" },
+    { id: "entr_ops",   name: "Founder operations & lean execution",ev: "founded/ran a venture, early hiring, scrappy" },
+  ]},
+  mktg: { label: "Marketing / Brand Management", skills: [
+    { id: "mktg_brand",  name: "Brand strategy & positioning",      ev: "positioning, messaging that drove results" },
+    { id: "mktg_insight",name: "Consumer insight & market research",ev: "segmentation, research that shaped strategy" },
+    { id: "mktg_camp",   name: "Integrated campaign management",    ev: "ran multichannel campaigns end-to-end" },
+    { id: "mktg_growth", name: "Digital & growth marketing",        ev: "performance marketing, funnel, CAC" },
+    { id: "mktg_pl",     name: "Brand / product P&L management",    ev: "owned a brand or product line's results" },
+    { id: "mktg_roi",    name: "Marketing analytics & ROI",         ev: "attribution, marketing KPIs, ROI analysis" },
+  ]},
+  gm: { label: "General Management / Leadership Rotational", skills: [
+    { id: "gm_pl",   name: "P&L / business-unit ownership",          ev: "owned a P&L or business-unit results" },
+    { id: "gm_ops",  name: "Cross-functional operations leadership", ev: "led across functions as an operator" },
+    { id: "gm_plan", name: "Strategic planning & resource allocation",ev: "annual plan, prioritization, budgeting" },
+    { id: "gm_perf", name: "Performance management & cadence",       ev: "ran operating rhythm, business KPIs" },
+    { id: "gm_org",  name: "Talent & organization building",         ev: "structured, hired, scaled a team" },
+    { id: "gm_dec",  name: "General-management decision-making",     ev: "made cross-functional trade-off calls" },
+  ]},
+  hr: { label: "Human Resources / People & Talent", skills: [
+    { id: "hr_ta",   name: "Talent acquisition & workforce planning",ev: "recruiting, sourcing, headcount planning" },
+    { id: "hr_rew",  name: "Total rewards & compensation",          ev: "comp design, benefits, pay equity" },
+    { id: "hr_od",   name: "Organizational development & design",   ev: "org design, change, effectiveness" },
+    { id: "hr_perf", name: "Performance & talent management",       ev: "performance systems, succession, development" },
+    { id: "hr_data", name: "People analytics & HR metrics",         ev: "workforce analytics, retention/attrition" },
+    { id: "hr_er",   name: "Employee relations & culture",          ev: "engagement, culture, employee relations" },
+  ]},
+};
+
+const DIFFERENTIATORS = [
+  { id: "vet",   label: "Military veteran",                    verify: "DD-214 / service record" },
+  { id: "intl",  label: "International student",               verify: "academic / visa record" },
+  { id: "tech",  label: "Technical undergrad (Eng/CS/Sci)",    verify: "transcript / degree" },
+  { id: "clin",  label: "Clinical / healthcare background",    verify: "license / employment history" },
+  { id: "found", label: "Startup or founder experience",       verify: "company record" },
+  { id: "global",label: "Significant international experience", verify: "employment history" },
+  { id: "ent",   label: "Enterprise leadership (500+ org)",    verify: "employment history / references" },
+];
+
+const RATING_GUIDE = [
+  { n: 1, label: "No exposure",                 hint: "Haven't done this." },
+  { n: 2, label: "Classroom / coursework only", hint: "Learned it, haven't applied it at work." },
+  { n: 3, label: "Demonstrated on the job",     hint: "Did this in a real role, with a result." },
+  { n: 4, label: "Led or taught others",        hint: "Owned it, set the standard, coached others." },
+];
+
+// ── Evidence sources + TRUST WEIGHTS ───────────────────────────
+const SOURCE_META = {
+  resume:    { key: "r", label: "Resume",         trust: 1.00 },
+  linkedin:  { key: "l", label: "LinkedIn",       trust: 0.85 },
+  github:    { key: "g", label: "GitHub",         trust: 1.00 },
+  certs:     { key: "c", label: "Certifications", trust: 1.00 },
+  portfolio: { key: "p", label: "Portfolio",      trust: 0.90 },
+};
+
+const CERT_OPTIONS = [
+  "CFA Level I", "CFA Level II", "CFA Level III", "CPA", "FRM",
+  "PMP", "CSPO / Scrum", "Six Sigma (Green/Black Belt)",
+  "Tableau", "Power BI", "Google Data Analytics", "SQL / Database",
+  "AWS / Cloud", "Series 7 / 63", "Lean", "PMI-ACP",
+];
+
+// ── Claude API ─────────────────────────────────────────────────
+const MBA_ANCHOR = `Score against MBA hiring standards: this candidate holds or is pursuing an MBA and targets a mid-to-senior individual-contributor or manager-level role. Apply the standard a corporate recruiter or hiring manager would use for an MBA lateral hire — not an entry-level candidate.`;
+
+const RUBRIC = `SCORE EACH SKILL 0-4 PER SOURCE, using this exact rubric:
+0 = nothing in this source supports the skill.
+1 = named only — a keyword, tool, or course listed with no evidence of applying it.
+2 = applied but thin or unquantified — e.g. "responsible for X" with no scope or result.
+3 = clearly demonstrated on the job WITH a concrete result, scope, or metric — e.g. "led X, cut Y 30%".
+4 = owned/led at scale with a standout quantified outcome, OR set the standard / taught others.
+
+Calibration examples:
+• "Managed budget" → 2.  "Owned $4M P&L, improved margin 6 pts" → 4.
+• "Familiar with SQL" → 1.  "Built SQL pipeline that cut reporting time 40%" → 3-4.
+• "Led team" → 2.  "Led 12-person cross-functional team to launch X" → 4.
+
+PER-SOURCE GUIDANCE:
+• r Resume — primary, broad. Reward quantified, scoped, outcome-bearing bullets.
+• l LinkedIn — corroborates the resume. THIRD-PARTY RECOMMENDATIONS and endorsements count far more than self-written headline/About text; do not double-count the same achievement already in the resume — only add signal LinkedIn uniquely provides.
+• g GitHub — technical/data/AI skills only (and technical-PM). Score from actual repos, commits, READMEs. Return no evidence for non-technical skills.
+• c Certifications — a relevant credential is strong evidence for the specific skills it covers (e.g. CFA → valuation/modeling; Tableau → visualization), and nothing else.
+• p Portfolio — work samples; score the skill the sample actually demonstrates.
+
+Be conservative. Absence of evidence is a 0, not a guess. Do not infer beyond what each source shows.`;
+
+async function callClaude(content, maxTokens = 2000) {
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: maxTokens, messages: [{ role: "user", content }] }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const type = data?.error?.type || "";
+      if (res.status === 429 || type.includes("rate_limit")) throw new Error("RATE_LIMIT");
+      if (res.status === 401 || type.includes("auth"))       throw new Error("AUTH");
+      throw new Error(data?.error?.message || "API_ERROR");
+    }
+    return (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  } catch (e) {
+    if (e.message === "RATE_LIMIT") throw new Error("You've hit your Claude usage limit. Try again in a few minutes, or upgrade to Pro for more usage.");
+    if (e.message === "AUTH")       throw new Error("Authentication error — sign into Claude.ai and refresh the page.");
+    if (e.message === "API_ERROR")  throw new Error("The AI service returned an error. Try again in a moment.");
+    if (String(e.message).includes("fetch")) throw new Error("Network error — check your connection, make sure you're signed into Claude.ai, and try again.");
+    throw e;
+  }
+}
+function parseJSON(text) {
+  const clean = text.replace(/```json|```/g, "").trim();
+  return JSON.parse(clean.slice(clean.indexOf("{"), clean.lastIndexOf("}") + 1));
+}
+function fileToBase64(file) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.onerror = () => rej(new Error("File read failed.")); r.readAsDataURL(file); });
+}
+function fileToText(file) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error("File read failed.")); r.readAsText(file); });
+}
+async function fileBlock(file) {
+  const n = file.name.toLowerCase();
+  if (n.endsWith(".pdf")) return { type: "document", source: { type: "base64", media_type: "application/pdf", data: await fileToBase64(file) } };
+  if (/\.(png|jpe?g|webp)$/.test(n)) { const mt = n.endsWith(".png") ? "image/png" : n.endsWith(".webp") ? "image/webp" : "image/jpeg"; return { type: "image", source: { type: "base64", media_type: mt, data: await fileToBase64(file) } }; }
+  return { type: "text", text: `[File: ${file.name}]\n${await fileToText(file)}` };
+}
+
+// ── Scoring ────────────────────────────────────────────────────
+function bandOf(score) {
+  if (score >= 90) return { label: "Market Ready",             color: U.green };
+  if (score >= 80) return { label: "Strong Position",          color: U.blue };
+  if (score >= 70) return { label: "Competitive — gaps exist", color: U.amber };
+  if (score >= 60) return { label: "Development Needed",       color: "#D85A30" };
+  return            { label: "At-Risk — act now",              color: U.red };
+}
+const pct = (avg4) => Math.round((avg4 / 4) * 1000) / 10;
+const round1 = (x) => Math.round(x * 10) / 10;
+
+function deriveStrength(val, nSources) {
+  if (nSources === 0) return "none";
+  if (nSources >= 2 && val >= 2.5) return "strong";
+  if (val >= 3) return "strong";
+  if (val >= 2 || nSources >= 2) return "moderate";
+  return "weak";
+}
+const STRENGTH = {
+  strong:   { label: "Strong evidence", color: U.green, dot: "●●●" },
+  moderate: { label: "Some evidence",   color: U.blue,  dot: "●●○" },
+  weak:     { label: "Weak evidence",   color: U.amber, dot: "●○○" },
+  none:     { label: "No evidence",     color: U.red,   dot: "○○○" },
+};
+
+function blendSkill(rec) {
+  if (!rec) return { val: 0, sources: [], strength: "none", note: "" };
+  const parts = [];
+  for (const m of Object.values(SOURCE_META)) {
+    const v = rec[m.key];
+    if (v != null && v >= 1) parts.push({ label: m.label, score: v, trust: m.trust });
+  }
+  if (!parts.length) return { val: 0, sources: [], strength: "none", note: rec.j || "" };
+  const wsum = parts.reduce((a, p) => a + p.trust, 0);
+  const val = round1(parts.reduce((a, p) => a + p.score * p.trust, 0) / wsum);
+  return { val, sources: parts, strength: deriveStrength(val, parts.length), note: rec.j || "" };
+}
+
+function buildModel(activeCats, self, evid, coach) {
+  const rows = activeCats.map((cat) => {
+    const skills = cat.skills.map((sk) => {
+      const s = self[sk.id] ?? null;
+      const blend = blendSkill(evid ? evid[sk.id] : null);
+      const sign = coach[sk.id] || null;
+      const verified = !!sign;
+      const vVal = verified ? s : blend.val;
+      const gap = (s != null) ? round1(s - blend.val) : null;
+      return { sk, s, blend, sign, verified, vVal, gap };
+    });
+    return { cat, skills };
+  });
+
+  const composite = (mode) => {
+    let wSum = 0, acc = 0;
+    rows.forEach(({ cat, skills }) => {
+      const vals = skills.map((r) => mode === "self" ? r.s : mode === "evidence" ? r.blend.val : r.vVal).filter((v) => v != null);
+      if (!vals.length) return;
+      acc += pct(vals.reduce((a, b) => a + b, 0) / vals.length) * cat.weight;
+      wSum += cat.weight;
+    });
+    return wSum ? round1(acc / wSum) : 0;
+  };
+
+  const all = rows.flatMap((r) => r.skills);
+  const claimedHigh = all.filter((r) => r.s >= 3);
+  const backed = claimedHigh.filter((r) => r.blend.strength === "moderate" || r.blend.strength === "strong").length;
+  const backedPct = claimedHigh.length ? Math.round((backed / claimedHigh.length) * 100) : 0;
+
+  return { rows, selfC: composite("self"), evC: composite("evidence"), verC: composite("verified"), backedPct };
+}
+
+// ── UI atoms ───────────────────────────────────────────────────
+function Card({ children, style }) { return <div style={{ background: U.paper, border: `1px solid ${U.grayLt}`, borderRadius: 10, padding: "22px 24px", marginBottom: 18, ...style }}>{children}</div>; }
+function SectionTitle({ children }) { return <div style={{ fontFamily: U.serif, fontSize: 18, fontWeight: 600, color: U.black, marginBottom: 14, paddingBottom: 8, borderBottom: `2px solid ${U.red}`, display: "inline-block" }}>{children}</div>; }
+function Lbl({ children }) { return <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: U.ink, margin: "14px 0 6px", letterSpacing: 0.2 }}>{children}</label>; }
+const fld = () => ({ width: "100%", fontSize: 14, padding: "9px 11px", border: `1px solid ${U.grayLt}`, borderRadius: 6, fontFamily: U.sans, color: U.ink, outline: "none", background: "#FAFAFA", boxSizing: "border-box" });
+function Btn({ children, onClick, busy, busyText, color, style, disabled }) {
+  const off = busy || disabled;
+  return <button onClick={onClick} disabled={off} style={{ marginTop: 16, width: "100%", background: off ? "#A8A8A8" : (color || U.red), color: "#fff", border: "none", borderRadius: 6, padding: "12px 18px", fontSize: 14, fontWeight: 700, fontFamily: U.sans, cursor: off ? "default" : "pointer", letterSpacing: 0.3, ...style }}>{busy ? (busyText || "Analyzing…") : children}</button>;
+}
+function Notice({ kind, children, style }) {
+  const map = { err: ["#FCEBEB", "#A32D2D"], ok: ["#EAF3DE", U.green], info: ["#FBF3E8", U.amber], blue: ["#E6F1FB", U.blue] };
+  const [bg, fg] = map[kind] || map.info;
+  return <div style={{ background: bg, color: fg, borderRadius: 6, padding: "11px 14px", fontSize: 13, lineHeight: 1.6, marginTop: 14, ...style }}>{children}</div>;
+}
+function useStagedBusy(busy, stages) {
+  const [i, setI] = useState(0);
+  useEffect(() => { if (!busy) { setI(0); return; } setI(0); const t = setInterval(() => setI((p) => Math.min(p + 1, stages.length - 1)), 1500); return () => clearInterval(t); }, [busy, stages.length]);
+  return busy ? stages[i] : null;
+}
+function SourceInput({ id, label, file, setFile, text, setText, accept, placeholder, note }) {
+  return (
+    <div style={{ padding: "12px 0", borderTop: `1px solid ${U.grayLt}` }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: U.ink, marginBottom: 6 }}>{label}</div>
+      {setFile && (
+        <>
+          <label htmlFor={id} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", border: `1px dashed ${U.gray}`, borderRadius: 6, padding: "9px 12px", fontSize: 13, color: U.muted, background: "#FAFAFA" }}>
+            <span style={{ fontSize: 15 }}>📎</span>{file ? <span style={{ color: U.ink, fontWeight: 600 }}>{file.name}</span> : <span>Upload (PDF, image, .txt)</span>}
+          </label>
+          <input id={id} type="file" accept={accept} onChange={(e) => e.target.files[0] && setFile(e.target.files[0])} style={{ display: "none" }} />
+          <div style={{ fontSize: 11.5, color: U.muted, margin: "6px 0 0" }}>…or paste text:</div>
+        </>
+      )}
+      <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={placeholder} style={{ ...fld(), minHeight: 56, resize: "vertical", marginTop: 6 }} />
+      {note && <div style={{ fontSize: 11.5, color: U.muted, marginTop: 5 }}>{note}</div>}
+    </div>
+  );
+}
+
+// In-memory store. Browser storage (localStorage/sessionStorage) is
+// blocked in the Claude artifact environment, so values live for the
+// session only — which is all the coach-name convenience needs.
+const MEM = {};
+const STORE = {
+  get: (k) => (k in MEM ? MEM[k] : null),
+  set: (k, v) => { MEM[k] = v; },
+};
+
+// ══════════════════════════════════════════════════════════════
+// ROOT
+// ══════════════════════════════════════════════════════════════
+function App() {
+  const [step, setStep]     = useState(1);
+  const [track, setTrack]   = useState("");
+  const [diffs, setDiffs]   = useState({});
+  const [self, setSelf]     = useState({});
+  const [evid, setEvid]     = useState(null);
+  const [evidSig, setEvidSig] = useState("");
+  const [coach, setCoach]   = useState({});
+  const [coachName, setCoachName] = useState(() => STORE.get("eccles_coach") || "");
+  const [sourcesUsed, setSourcesUsed] = useState([]);
+  const [outcomes, setOutcomes] = useState({});
+
+  useEffect(() => { STORE.set("eccles_coach", coachName); }, [coachName]);
+
+  useEffect(() => {
+    const link = document.createElement("link"); link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
+  const activeCats = useMemo(() => CATS.map((c) => c.id === "func" ? { ...c, skills: track ? FUNC[track].skills : [] } : { ...c, skills: SKILLS[c.id] }), [track]);
+  const allSkills = useMemo(() => activeCats.flatMap((c) => c.skills), [activeCats]);
+  const model = useMemo(() => buildModel(activeCats, self, evid, coach), [activeCats, self, evid, coach]);
+
+  const STEPS = [
+    { n: 1, label: "Setup" }, { n: 2, label: "Self-Assessment" }, { n: 3, label: "Evidence" },
+    { n: 4, label: "Evidence-Backed Readiness" }, { n: 5, label: "Outcomes & Export" },
+  ];
+
+  return (
+    <div style={{ fontFamily: U.sans, color: U.ink, maxWidth: 880, margin: "0 auto", background: "#fff" }}>
+      <div style={{ borderTop: `5px solid ${U.red}`, padding: "22px 28px 18px", borderBottom: `1px solid ${U.grayLt}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ width: 46, height: 46, background: U.red, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 26, fontFamily: U.serif }}>U</div>
+          <div>
+            <div style={{ fontSize: 12, letterSpacing: 2, textTransform: "uppercase", color: U.red, fontWeight: 700 }}>Full-Time MBA Program · David Eccles School of Business</div>
+            <div style={{ fontFamily: U.serif, fontSize: 24, fontWeight: 600, color: U.black, lineHeight: 1.1, marginTop: 2 }}>Evidence-Backed Skills Engine</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 13, color: U.muted, marginTop: 8 }}>Your self-rating is a claim. Your resume, LinkedIn, GitHub and credentials are the proof. See where they line up.</div>
+      </div>
+
+      <div style={{ display: "flex", gap: 2, background: "#F4F4F4", padding: "0 14px", borderBottom: `1px solid ${U.grayLt}`, flexWrap: "wrap" }}>
+        {STEPS.map((s) => {
+          const active = step === s.n, done = step > s.n;
+          return (
+            <button key={s.n} onClick={() => setStep(s.n)} style={{ border: "none", background: "transparent", padding: "13px 12px", cursor: "pointer", fontFamily: U.sans, fontSize: 13, fontWeight: active ? 700 : 500, color: active ? U.red : U.muted, borderBottom: active ? `3px solid ${U.red}` : "3px solid transparent", display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 19, height: 19, borderRadius: "50%", background: active ? U.red : done ? U.green : "#CFCFCF", color: "#fff", fontSize: 11, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>{done ? "✓" : s.n}</span>
+              {s.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{ padding: "24px 28px 36px" }}>
+        {step === 1 && <Setup {...{ track, setTrack, diffs, setDiffs, next: () => setStep(2) }} />}
+        {step === 2 && <SelfAssess {...{ activeCats, track, self, setSelf, back: () => setStep(1), next: () => setStep(3) }} />}
+        {step === 3 && <Evidence {...{ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUsed, back: () => setStep(2), next: () => setStep(4) }} />}
+        {step === 4 && <Verified {...{ model, track, evid, sourcesUsed, coach, setCoach, coachName, setCoachName, diffs, back: () => setStep(3), next: () => setStep(5) }} />}
+        {step === 5 && <Outcomes {...{ model, track, diffs, outcomes, setOutcomes, coachName, back: () => setStep(4) }} />}
+      </div>
+
+      <div style={{ borderTop: `1px solid ${U.grayLt}`, padding: "14px 28px", fontSize: 11.5, color: "#9A9A9A", textAlign: "center" }}>
+        Full-Time MBA Program · David Eccles School of Business — Career Services · Evidence scores are AI estimates, not guarantees. Validation comes with outcomes.
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// STEP 1 — SETUP
+// ══════════════════════════════════════════════════════════════
+function Setup({ track, setTrack, diffs, setDiffs, next }) {
+  const toggle = (id) => setDiffs((d) => ({ ...d, [id]: !d[id] }));
+  return (
+    <Card>
+      <SectionTitle>Setup</SectionTitle>
+      <div style={{ fontSize: 13.5, color: U.ink, lineHeight: 1.6 }}>Pick your track — it loads the right functional skills and calibrates every benchmark.</div>
+      <Lbl>Career track</Lbl>
+      <select value={track} onChange={(e) => setTrack(e.target.value)} style={fld()}>
+        <option value="">Select your target track…</option>
+        {Object.entries(FUNC).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+      </select>
+      <Lbl>Your differentiators (select all that apply)</Lbl>
+      <div style={{ background: "#FBF7F7", border: `1px solid ${U.grayLt}`, borderLeft: `3px solid ${U.red}`, borderRadius: 6, padding: "12px 15px", marginBottom: 12 }}>
+        <div style={{ fontSize: 12.5, color: U.ink, lineHeight: 1.6 }}>Real, market-valued assets — and each one is independently verifiable. They build your <b>Differentiator Profile</b> and shape coaching. They are deliberately kept <b>out of the competency score</b>: being a veteran or a founder is a positioning advantage, not proof you can build a model.</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {DIFFERENTIATORS.map((d) => (
+          <label key={d.id} style={{ display: "flex", alignItems: "flex-start", gap: 9, cursor: "pointer", padding: "10px 12px", border: `1px solid ${diffs[d.id] ? U.red : U.grayLt}`, borderRadius: 6, background: diffs[d.id] ? "#FFF5F5" : "#FAFAFA", fontSize: 13 }}>
+            <input type="checkbox" checked={!!diffs[d.id]} onChange={() => toggle(d.id)} style={{ marginTop: 2, accentColor: U.red, flexShrink: 0 }} />
+            <span><span style={{ color: U.ink, fontWeight: 600 }}>{d.label}</span><span style={{ display: "block", fontSize: 11.5, color: U.muted, marginTop: 2 }}>Verify via {d.verify}</span></span>
+          </label>
+        ))}
+      </div>
+      <div style={{ borderTop: `1px solid ${U.grayLt}`, marginTop: 22, paddingTop: 18 }}>
+        {!track
+          ? <Notice kind="info">⚠ Select a career track above to continue — the functional skills and benchmarks load from your selection.</Notice>
+          : <Notice kind="ok">✓ Track selected: <b>{FUNC[track].label}</b>. You're ready to continue.</Notice>
+        }
+        <Btn onClick={next} disabled={!track}>Continue to self-assessment →</Btn>
+      </div>
+    </Card>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// STEP 2 — SELF-ASSESSMENT
+// ══════════════════════════════════════════════════════════════
+function SelfAssess({ activeCats, track, self, setSelf, back, next }) {
+  const set = (id, v) => setSelf((s) => ({ ...s, [id]: v }));
+  const total = activeCats.flatMap((c) => c.skills).length;
+  const done = activeCats.flatMap((c) => c.skills).filter((sk) => self[sk.id] != null).length;
+  return (
+    <>
+      <Card>
+        <SectionTitle>Skills Self-Assessment</SectionTitle>
+        <div style={{ fontSize: 13.5, color: U.ink, lineHeight: 1.6 }}>Rate yourself honestly. This is your <b>claim</b> — next, your evidence gets to back it up or call it. Inflated ratings just get flagged.</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
+          {RATING_GUIDE.map((g) => (
+            <div key={g.n} style={{ flex: "1 1 180px", border: `1px solid ${U.grayLt}`, borderRadius: 6, padding: "9px 11px", background: "#FAFAFA" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: U.ink }}><span style={{ color: U.red }}>{g.n}</span> · {g.label}</div>
+              <div style={{ fontSize: 11.5, color: U.muted, marginTop: 2 }}>{g.hint}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 12, fontSize: 12.5, color: done === total ? U.green : U.muted, fontWeight: done === total ? 700 : 400 }}>{done} / {total} rated{done === total ? " — all done ✓" : ""}</div>
+      </Card>
+      {activeCats.map((c) => (
+        <Card key={c.id}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+            <div style={{ fontFamily: U.serif, fontSize: 16, fontWeight: 600, color: U.black }}>{c.label}</div>
+            <div style={{ fontSize: 12, color: U.muted }}>{c.weight}% of score</div>
+          </div>
+          {c.id === "func" && <div style={{ fontSize: 12.5, color: U.muted, marginBottom: 8 }}>{FUNC[track].label}</div>}
+          {c.skills.map((sk) => (
+            <div key={sk.id} style={{ padding: "12px 0", borderTop: `1px solid ${U.grayLt}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ fontSize: 13.5, color: U.ink, fontWeight: 600, flex: "1 1 220px" }}>{sk.name}</div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  {[1, 2, 3, 4].map((n) => (
+                    <button key={n} onClick={() => set(sk.id, n)} title={RATING_GUIDE[n - 1].label} style={{ width: 34, height: 34, borderRadius: 6, border: `1px solid ${self[sk.id] === n ? U.red : U.grayLt}`, background: self[sk.id] === n ? U.red : "#fff", color: self[sk.id] === n ? "#fff" : U.muted, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: U.sans }}>{n}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </Card>
+      ))}
+      <div style={{ background: U.paper, border: `1px solid ${U.grayLt}`, borderRadius: 10, padding: "18px 24px", marginBottom: 18 }}>
+        {done < total
+          ? <Notice kind="info" style={{ marginTop: 0 }}>⚠ Rate all <b>{total} skills</b> before continuing — {total - done} remaining. Every unrated skill is excluded from your Evidence-Backed score.</Notice>
+          : <Notice kind="ok" style={{ marginTop: 0 }}>✓ All {total} skills rated. Your self-assessment is complete — add your evidence next.</Notice>
+        }
+        <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+          <Btn onClick={back} color="#6B6B6B" style={{ flex: "0 0 130px", marginTop: 0 }}>← Setup</Btn>
+          <Btn onClick={next} disabled={done < total} style={{ marginTop: 0 }}>Add evidence →</Btn>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// STEP 3 — EVIDENCE
+// ══════════════════════════════════════════════════════════════
+function Evidence({ allSkills, evid, setEvid, evidSig, setEvidSig, setSourcesUsed, back, next }) {
+  const [resumeF, setResumeF] = useState(null); const [resumeT, setResumeT] = useState("");
+  const [liF, setLiF] = useState(null);         const [liT, setLiT] = useState("");
+  const [ghT, setGhT] = useState("");
+  const [certs, setCerts] = useState({});       const [certOther, setCertOther] = useState("");
+  const [portF, setPortF] = useState(null);     const [portT, setPortT] = useState("");
+  const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
+  const stage = useStagedBusy(busy, ["Reading your evidence…", "Scoring each source independently…", "Cross-checking for corroboration…", "Blending into evidence-backed scores…"]);
+
+  const certList = [...Object.keys(certs).filter((k) => certs[k]), ...(certOther.trim() ? [certOther.trim()] : [])];
+  const toggleCert = (c) => setCerts((s) => ({ ...s, [c]: !s[c] }));
+
+  const fileSig = (file) => file ? `${file.name}:${file.size}` : "";
+  const sources = [
+    { has: !!(resumeF || resumeT.trim()) },
+    { has: !!(liF || liT.trim()) },
+    { has: !!ghT.trim() },
+    { has: certList.length > 0 },
+    { has: !!(portF || portT.trim()) },
+  ];
+  const filledCount = sources.filter((s) => s.has).length;
+  const completeness = Math.round((filledCount / sources.length) * 100);
+
+  const signature = [
+    resumeT.trim(), fileSig(resumeF), liT.trim(), fileSig(liF), ghT.trim(),
+    certList.join(","), portT.trim(), fileSig(portF), allSkills.map((s) => s.id).join(","),
+  ].join("|");
+
+  async function run() {
+    setErr("");
+    const hasResume = resumeF || resumeT.trim();
+    if (!hasResume) return setErr("A resume is required as the primary source. Add other sources to strengthen the read.");
+    if (evid && signature === evidSig) { next(); return; }
+    setBusy(true);
+    try {
+      const present = [];
+      if (hasResume) present.push("r");
+      if (liF || liT.trim()) present.push("l");
+      if (ghT.trim()) present.push("g");
+      if (certList.length) present.push("c");
+      if (portF || portT.trim()) present.push("p");
+
+      const legendAll = {
+        r: "r = Resume (primary, broad)",
+        l: "l = LinkedIn (corroboration; third-party recommendations weigh most)",
+        g: "g = GitHub / technical work (technical, data & AI skills only)",
+        c: "c = Certifications (strong evidence for the specific skills each credential covers)",
+        p: "p = Portfolio / work samples",
+      };
+      const legend = present.map((k) => "• " + legendAll[k]).join("\n");
+      const list = allSkills.map((s) => `${s.id} | ${s.name}`).join("\n");
+
+      const txtParts = [];
+      if (resumeT.trim()) txtParts.push("RESUME:\n" + resumeT);
+      if (liT.trim())     txtParts.push("LINKEDIN (text):\n" + liT);
+      if (ghT.trim())     txtParts.push("GITHUB / TECHNICAL WORK:\n" + ghT);
+      if (certList.length)txtParts.push("CERTIFICATIONS: " + certList.join(", "));
+      if (portT.trim())   txtParts.push("PORTFOLIO (text):\n" + portT);
+
+      const content = [{ type: "text", text:
+`You are the Eccles MBA Evidence-Backed Skills engine.
+${MBA_ANCHOR}
+
+${RUBRIC}
+
+SOURCES PROVIDED (score each skill 0-4 separately for each):
+${legend}
+
+Return one object per skill, keyed by id. For each skill include ONLY the source keys that are actually present AND show evidence (score >= 1). OMIT a source key entirely if that source shows nothing for the skill. OMIT the whole skill if NO source shows any evidence. Also include "e" (overall strength: none/weak/moderate/strong) and "j" (<=8 word note pointing to the single strongest piece of evidence).
+
+COMPETENCIES:
+${list}
+
+${txtParts.join("\n\n")}
+${(resumeF || liF || portF) ? "\nAdditional sources are attached as documents below." : ""}
+
+Return ONLY valid JSON, no markdown, shaped exactly:
+{"skills":{"<id>":{"r":3,"l":2,"e":"moderate","j":"led 8-person launch"}}}` }];
+
+      if (!resumeT.trim() && resumeF) content.push(await fileBlock(resumeF));
+      if (!liT.trim() && liF)         content.push(await fileBlock(liF));
+      if (!portT.trim() && portF)     content.push(await fileBlock(portF));
+
+      const r = parseJSON(await callClaude(content, 3200));
+      setEvid(r.skills || {});
+      setEvidSig(signature);
+      setSourcesUsed(present.map((k) => Object.values(SOURCE_META).find((m) => m.key === k).label));
+      next();
+    } catch (e) { setErr(e.message); }
+    setBusy(false);
+  }
+
+  return (
+    <Card>
+      <SectionTitle>Evidence — your record scores itself</SectionTitle>
+      <div style={{ fontSize: 13.5, color: U.ink, lineHeight: 1.6 }}>Claude scores each source <b>independently and without seeing your self-ratings</b>, then blends them by how hard each source is to fake. More sources that agree = a finer, more confident score. Only the resume is required; everything else strengthens the read.</div>
+
+      <SourceInput id="ev-resume" label="Resume — required (primary, broad)" file={resumeF} setFile={setResumeF} text={resumeT} setText={setResumeT} accept=".pdf,.png,.jpg,.jpeg,.txt" placeholder="Paste full resume text — quantified bullets score highest." note="“Cut onboarding time 40%” reads as a 4; “responsible for onboarding” reads as a 2." />
+
+      <SourceInput id="ev-li" label="LinkedIn (corroboration + third-party recommendations)" file={liF} setFile={setLiF} text={liT} setText={setLiT} accept=".pdf,.txt" placeholder="Paste your headline, About, experience — and any recommendations you've received." note="Export: LinkedIn profile → More → Save to PDF. Recommendations are the part that adds real third-party signal." />
+
+      <SourceInput id="ev-gh" label="GitHub / technical work (technical, data & AI skills)" text={ghT} setText={setGhT} placeholder="Paste your GitHub profile URL and a summary of pinned repos / project READMEs." note="Best for technical-PM, data, and AI competencies. Paste README text for the strongest read." />
+
+      <div style={{ padding: "12px 0", borderTop: `1px solid ${U.grayLt}` }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: U.ink, marginBottom: 6 }}>Certifications & credentials (objective, high-trust)</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+          {CERT_OPTIONS.map((c) => (
+            <button key={c} onClick={() => toggleCert(c)} style={{ fontSize: 12.5, fontWeight: 600, padding: "5px 11px", borderRadius: 14, cursor: "pointer", fontFamily: U.sans, border: `1px solid ${certs[c] ? U.red : U.grayLt}`, background: certs[c] ? U.red : "#fff", color: certs[c] ? "#fff" : U.muted }}>{c}</button>
+          ))}
+        </div>
+        <input value={certOther} onChange={(e) => setCertOther(e.target.value)} placeholder="Other credentials (comma-separated)" style={{ ...fld(), marginTop: 8 }} />
+      </div>
+
+      <SourceInput id="ev-port" label="Portfolio / work samples (PM, strategy, marketing)" file={portF} setFile={setPortF} text={portT} setText={setPortT} accept=".pdf,.png,.jpg,.jpeg,.txt" placeholder="Paste a link or describe a work sample, case, or project you can show." note="Score reflects the skill the sample actually demonstrates." />
+
+      <div style={{ borderTop: `1px solid ${U.grayLt}`, marginTop: 20, paddingTop: 18 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: U.muted, marginBottom: 6 }}>
+          <span>Evidence read · <b style={{ color: U.ink }}>{filledCount} of {sources.length}</b> sources added</span>
+          <span style={{ fontWeight: 700, color: completeness >= 60 ? U.green : completeness >= 40 ? U.blue : U.amber }}>{completeness}% complete</span>
+        </div>
+        <div style={{ height: 8, background: U.grayLt, borderRadius: 5, overflow: "hidden", marginBottom: 12 }}>
+          <div style={{ width: `${completeness}%`, height: "100%", background: completeness >= 60 ? U.green : completeness >= 40 ? U.blue : U.amber, borderRadius: 5, transition: "width .5s ease" }} />
+        </div>
+        {!(resumeF || resumeT.trim())
+          ? <Notice kind="info">⚠ A <b>resume is required</b> to continue — it's the primary source. LinkedIn, GitHub, certifications, and portfolio are optional and will sharpen your scores if added.</Notice>
+          : filledCount === 1
+            ? <Notice kind="ok">✓ Resume loaded — that's a complete, valid run. Adding even one more source (LinkedIn takes ~30 seconds to export) unlocks finer, corroborated scores.</Notice>
+            : <Notice kind="ok">✓ {filledCount} sources ready. More agreeing evidence means a sharper, more confident score.</Notice>
+        }
+        {err && <Notice kind="err">{err}</Notice>}
+        <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+          <Btn onClick={back} color="#6B6B6B" style={{ flex: "0 0 160px", marginTop: 0 }}>← Self-assessment</Btn>
+          <Btn onClick={run} busy={busy} busyText={stage} style={{ marginTop: 0 }}>{(evid && signature === evidSig) ? "View your results →" : "Score my evidence →"}</Btn>
+        </div>
+        {!busy && !(evid && signature === evidSig) && (resumeF || resumeT.trim()) &&
+          <div style={{ fontSize: 11.5, color: U.muted, textAlign: "center", marginTop: 8 }}>Scoring usually takes 30–60 seconds and uses your own Claude account's usage. Your inputs are analyzed, not stored — export your report to keep it.</div>}
+      </div>
+    </Card>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// STEP 4 — EVIDENCE-BACKED READINESS
+// ══════════════════════════════════════════════════════════════
+function Verified({ model, track, evid, sourcesUsed, coach, setCoach, coachName, setCoachName, diffs, back, next }) {
+  const { rows, selfC, evC, verC, backedPct } = model;
+  function toggleCoach(id) {
+    setCoach((c) => {
+      const nx = { ...c };
+      if (nx[id]) delete nx[id];
+      else nx[id] = { by: coachName.trim() || "Coach", at: new Date().toISOString().slice(0, 10) };
+      return nx;
+    });
+  }
+  const selectedDiffs = DIFFERENTIATORS.filter((d) => diffs[d.id]);
+
+  if (!evid) return <Card><SectionTitle>Evidence-Backed Readiness</SectionTitle><Notice kind="info">Run the evidence step first — then your scores appear here.</Notice><Btn onClick={back} color="#6B6B6B" style={{ maxWidth: 200 }}>← Back to evidence</Btn></Card>;
+
+  return (
+    <>
+      <Card>
+        <SectionTitle>Evidence-Backed Readiness{track ? ` — ${FUNC[track].label}` : ""}</SectionTitle>
+        {sourcesUsed?.length > 0 && <div style={{ fontSize: 12, color: U.muted, marginBottom: 12 }}>Sources read: {sourcesUsed.join(" · ")}</div>}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+          <ScoreTile label="Self-Reported" sub="what you claimed" value={selfC} faded />
+          <ScoreTile label="Evidence-Backed" sub="what your record proves" value={evC} />
+          <ScoreTile label="Coach-Verified" sub="evidence + coach sign-off" value={verC} accent />
+        </div>
+        <Notice kind="info">The number that counts is <b>Coach-Verified</b>: every point is either backed by evidence or signed off by a coach. The gap between Self-Reported and Evidence-Backed is the coaching conversation — see it skill by skill below.</Notice>
+        <div style={{ marginTop: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: U.muted, marginBottom: 6 }}>
+            <span>Of the skills you rated 3+, how many your evidence actually backs</span><span style={{ fontWeight: 700, color: U.ink }}>{backedPct}%</span>
+          </div>
+          <div style={{ height: 8, background: U.grayLt, borderRadius: 5, overflow: "hidden" }}><div style={{ width: `${backedPct}%`, height: "100%", background: bandOf(backedPct).color, borderRadius: 5, transition: "width .7s ease" }} /></div>
+        </div>
+      </Card>
+
+      <Card style={{ background: "#FBF7F7" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: U.ink, marginBottom: 4 }}>Coach sign-off</div>
+        <div style={{ fontSize: 12.5, color: U.muted, marginBottom: 8 }}>Enter your name before co-signing skills. Each sign-off is stamped with who verified it and the date, so the exported record is attributable — not an anonymous checkbox.</div>
+        <input value={coachName} onChange={(e) => setCoachName(e.target.value)} placeholder="Coach name (for the sign-off record)" style={fld()} />
+      </Card>
+
+      {rows.map(({ cat, skills }) => (
+        <Card key={cat.id}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+            <div style={{ fontFamily: U.serif, fontSize: 16, fontWeight: 600, color: U.black }}>{cat.label} <span style={{ fontSize: 12, color: "#B0B0B0", fontWeight: 400 }}>· {cat.weight}%</span></div>
+          </div>
+          {skills.map((r) => <SkillRow key={r.sk.id} r={r} onToggle={() => toggleCoach(r.sk.id)} />)}
+        </Card>
+      ))}
+
+      <Card>
+        <SectionTitle>Differentiator Profile</SectionTitle>
+        {selectedDiffs.length === 0 ? <div style={{ fontSize: 13, color: U.muted }}>No differentiators selected. These verifiable assets strengthen positioning — add them in Setup if they apply.</div> : (
+          <>
+            <div style={{ fontSize: 12.5, color: U.muted, marginBottom: 10 }}>Verifiable, market-valued assets — kept separate from the competency score on purpose.</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {selectedDiffs.map((d) => <span key={d.id} style={{ background: "#FFF5F5", border: `1px solid ${U.red}`, color: U.redDark, fontSize: 12.5, fontWeight: 600, padding: "6px 12px", borderRadius: 16 }}>{d.label} <span style={{ color: U.muted, fontWeight: 400 }}>· {d.verify}</span></span>)}
+            </div>
+          </>
+        )}
+      </Card>
+
+      <div style={{ background: U.paper, border: `1px solid ${U.grayLt}`, borderRadius: 10, padding: "18px 24px", marginBottom: 18 }}>
+        <Notice kind="ok" style={{ marginTop: 0 }}>✓ Review your skill gaps above and have your coach co-sign what they can vouch for. When you're ready, continue to log outcomes and export your report.</Notice>
+        <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+          <Btn onClick={back} color="#6B6B6B" style={{ flex: "0 0 160px", marginTop: 0 }}>← Evidence</Btn>
+          <Btn onClick={next} style={{ marginTop: 0 }}>Track outcomes & export →</Btn>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ScoreTile({ label, sub, value, faded, accent }) {
+  const b = bandOf(value);
+  return (
+    <div style={{ border: `1px solid ${accent ? U.red : U.grayLt}`, borderRadius: 8, padding: "14px", background: accent ? "#FFF5F5" : "#FAFAFA", opacity: faded ? 0.85 : 1 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: accent ? U.red : U.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+      <div style={{ fontFamily: U.serif, fontSize: 17, fontWeight: 700, color: b.color, lineHeight: 1.25, margin: "5px 0 3px" }}>{b.label}</div>
+      <div style={{ fontSize: 12.5, color: U.muted }}><b style={{ color: U.ink, fontSize: 14 }}>{value}</b> / 100 · {sub}</div>
+    </div>
+  );
+}
+
+function SkillRow({ r, onToggle }) {
+  const st = STRENGTH[r.blend.strength] || STRENGTH.none;
+  let chip = null;
+  if (r.s != null && r.blend.val != null) {
+    const g = r.gap;
+    if (g >= 1.5)       chip = { t: "▲ Overclaimed",  c: U.red,   bg: "#FCEBEB" };
+    else if (g >= 0.7)  chip = { t: "▲ Slightly high", c: U.amber, bg: "#FBF3E8" };
+    else if (g <= -0.7) chip = { t: "▼ Undersold",     c: U.blue,  bg: "#E6F1FB" };
+    else                chip = { t: "✓ Aligned",       c: U.green, bg: "#EAF3DE" };
+  }
+  const unevidenced = r.s >= 3 && (r.blend.strength === "none" || r.blend.strength === "weak");
+  return (
+    <div style={{ padding: "12px 0", borderTop: `1px solid ${U.grayLt}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 200px", fontSize: 13.5, color: U.ink, fontWeight: 600 }}>{r.sk.name}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Mini label="Self" value={r.s != null ? r.s : "—"} />
+          <Mini label="Evidence" value={r.blend.val != null ? r.blend.val.toFixed(1) : "—"} color={st.color} />
+          {chip && <span style={{ background: chip.bg, color: chip.c, fontSize: 11.5, fontWeight: 700, padding: "3px 9px", borderRadius: 12, whiteSpace: "nowrap" }}>{chip.t}</span>}
+        </div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 7, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11.5, color: st.color, fontWeight: 700, letterSpacing: 1 }}>{st.dot}</span>
+        <span style={{ fontSize: 12.5, color: U.muted, flex: "1 1 180px" }}>{r.blend.note || st.label}{r.blend.sources.length > 0 && <span style={{ color: U.ink }}> · {r.blend.sources.map((s) => s.label).join(" + ")}</span>}</span>
+        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: r.verified ? U.green : U.muted, cursor: "pointer", fontWeight: r.verified ? 700 : 400 }}>
+          <input type="checkbox" checked={r.verified} onChange={onToggle} style={{ accentColor: U.green }} />
+          {r.verified ? `Verified · ${r.sign.by}, ${r.sign.at}` : "Coach-verify"}
+        </label>
+      </div>
+      {unevidenced && !r.verified && <div style={{ fontSize: 11.5, color: U.red, marginTop: 5 }}>⚠ Claimed at {r.s}/4 but your evidence doesn't show it. Add a proof point, or have a coach verify it.</div>}
+    </div>
+  );
+}
+function Mini({ label, value, color }) {
+  return (
+    <div style={{ textAlign: "center", minWidth: 52 }}>
+      <div style={{ fontSize: 10, color: U.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+      <div style={{ fontSize: 17, fontWeight: 700, color: color || U.ink, fontFamily: U.serif }}>{value}<span style={{ fontSize: 11, color: U.muted }}>/4</span></div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+// STEP 5 — OUTCOMES & EXPORT
+// ══════════════════════════════════════════════════════════════
+const STAGES = ["Not started", "Researching", "Applying", "Interviewing", "Final rounds", "Offer received", "Accepted"];
+function Outcomes({ model, track, diffs, outcomes, setOutcomes, coachName, back }) {
+  const set = (k, v) => setOutcomes((o) => ({ ...o, [k]: v }));
+  const num = (k, label) => (
+    <div><Lbl>{label}</Lbl><input type="number" min="0" value={outcomes[k] ?? ""} onChange={(e) => set(k, e.target.value)} placeholder="0" style={fld()} /></div>
+  );
+  const selectedDiffs = DIFFERENTIATORS.filter((d) => diffs[d.id]);
+  const [copied, setCopied] = useState(false);
+
+  function build() {
+    const { rows, selfC, evC, verC, backedPct } = model;
+    const L = [];
+    L.push("ECCLES MBA — EVIDENCE-BACKED SKILLS REPORT");
+    L.push("University of Utah — David Eccles School of Business");
+    if (track) L.push(`Track: ${FUNC[track].label}`);
+    L.push(`Snapshot date: ${new Date().toLocaleDateString()}`);
+    L.push("═".repeat(56));
+    L.push(`SELF-REPORTED:    ${selfC}/100`);
+    L.push(`EVIDENCE-BACKED:  ${evC}/100  — ${bandOf(evC).label}`);
+    L.push(`COACH-VERIFIED:   ${verC}/100  — ${bandOf(verC).label}`);
+    L.push(`Evidence backs ${backedPct}% of skills rated 3+.`);
+    rows.forEach(({ cat, skills }) => {
+      L.push(`\n${cat.label.toUpperCase()} (${cat.weight}%)`);
+      skills.forEach((r) => {
+        const src = r.blend.sources.length ? ` [${r.blend.sources.map((s) => s.label).join("+")}]` : "";
+        const sign = r.verified ? ` (verified by ${r.sign.by}, ${r.sign.at})` : "";
+        L.push(`  ${r.sk.name}: self ${r.s ?? "—"} / evidence ${r.blend.val != null ? r.blend.val.toFixed(1) : "—"}${src}${sign}`);
+        if (r.blend.note) L.push(`      ${r.blend.note}`);
+      });
+    });
+    if (selectedDiffs.length) { L.push("\nDIFFERENTIATOR PROFILE (verifiable, unscored)"); selectedDiffs.forEach((d) => L.push(`  • ${d.label} — verify via ${d.verify}`)); }
+    L.push("\nOUTCOMES (validation data)");
+    L.push(`  Journey stage: ${outcomes.stage || "—"}`);
+    L.push(`  Target role / company: ${outcomes.target || "—"}`);
+    L.push(`  Applications submitted: ${outcomes.apps ?? "—"}`);
+    L.push(`  First-round interviews: ${outcomes.first ?? "—"}`);
+    L.push(`  Final-round interviews: ${outcomes.finals ?? "—"}`);
+    L.push(`  Offers received: ${outcomes.offers ?? "—"}`);
+    L.push(`  Logged by coach: ${outcomes.coachLogged ? (coachName || "coach") : "self-reported"}`);
+    L.push("\n" + "═".repeat(56));
+    L.push("Eccles School of Business — Career Services");
+    L.push("Validation comes with outcomes: re-run every 6 weeks and report results to your coach.");
+    return L.join("\n");
+  }
+  function doCopy() { navigator.clipboard.writeText(build()).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500); }).catch(() => alert("Copy not supported — use Print.")); }
+  function doPrint() {
+    const escP = (s) => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c]));
+    const w = window.open("", "_blank");
+    if (!w) { alert("Pop-up blocked — allow pop-ups for this site, or use Copy instead."); return; }
+    w.document.write(`<pre style="font-family:monospace;font-size:13px;padding:24px;white-space:pre-wrap;">${escP(build())}</pre>`);
+    w.document.close(); w.print();
+  }
+  return (
+    <>
+      <Card style={{ borderLeft: `4px solid ${U.red}` }}>
+        <SectionTitle>Why we track outcomes</SectionTitle>
+        <div style={{ fontSize: 13.5, color: U.ink, lineHeight: 1.7 }}>
+          <b>Validation comes with outcomes.</b> This score is a well-built estimate — but the only way it earns the right to be trusted is by checking whether higher scores actually lead to more interviews and offers. That data comes from you. Log your results here, re-run this every <b>6 weeks</b>, and share each snapshot with your coach. Over time, your cohort's data is what turns this from a reasonable guess into a proven predictor — and what makes an Eccles credential mean something to recruiters.
+        </div>
+        <Notice kind="info">Your re-runs are a timeline: each snapshot stamps a score, and pairing those with what actually happened is the validation. Reporting honestly — including when things aren't working — is what keeps the data trustworthy for the next cohort.</Notice>
+      </Card>
+
+      <Card>
+        <SectionTitle>Log this snapshot</SectionTitle>
+        <Lbl>Where are you in the journey?</Lbl>
+        <select value={outcomes.stage || ""} onChange={(e) => set("stage", e.target.value)} style={fld()}>
+          <option value="">Select…</option>
+          {STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <Lbl>Target role / company (optional)</Lbl>
+        <input value={outcomes.target || ""} onChange={(e) => set("target", e.target.value)} placeholder="e.g. Senior PM — Qualtrics" style={fld()} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 4 }}>
+          {num("apps", "Applications submitted")}
+          {num("first", "First-round interviews")}
+          {num("finals", "Final-round interviews")}
+          {num("offers", "Offers received")}
+        </div>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, fontSize: 13, color: U.ink, cursor: "pointer" }}>
+          <input type="checkbox" checked={!!outcomes.coachLogged} onChange={(e) => set("coachLogged", e.target.checked)} style={{ accentColor: U.red }} />
+          A coach logged these outcomes (more reliable than self-report)
+        </label>
+        <Notice kind="blue"><b>Coaches:</b> logging outcomes for your caseload gives Eccles a complete dataset instead of a skewed one — students who land jobs tend to report back; those who struggle go quiet. Your record closes that gap.</Notice>
+      </Card>
+
+      <Card style={{ background: "#F9F9F9" }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: U.ink, marginBottom: 4 }}>Export your report</div>
+        <div style={{ fontSize: 13, color: U.muted, marginBottom: 4 }}>Includes scores, evidence sources, coach sign-offs, differentiators, and this snapshot's outcomes — the full record for your coach and for tracking progress. Nothing is saved when you close this page, so export before you leave.</div>
+        <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+          <button onClick={doCopy} style={{ flex: 1, background: U.ink, color: "#fff", border: "none", borderRadius: 6, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: U.sans }}>{copied ? "✓ Copied!" : "📋 Copy full report"}</button>
+          <button onClick={doPrint} style={{ flex: 1, background: "#444", color: "#fff", border: "none", borderRadius: 6, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: U.sans }}>🖨 Print / Save PDF</button>
+        </div>
+      </Card>
+
+      <Btn onClick={back} color="#6B6B6B" style={{ maxWidth: 200 }}>← Back to readiness</Btn>
+    </>
+  );
+}
+
+// ── Mount ──────────────────────────────────────────────────────
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
 </body>
 </html>
